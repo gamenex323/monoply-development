@@ -446,7 +446,7 @@ namespace SWS
                 size = Mathf.Clamp(size, 0, 1.2f);
                 
                 #if UNITY_5_6_OR_NEWER
-                Handles.FreeMoveHandle(wpPos, Quaternion.identity, size, Vector3.zero, (controlID, position, rotation, hSize, eventType) => 
+                var fmh_449_47_638686113963354352 = Quaternion.identity; Handles.FreeMoveHandle(wpPos, size, Vector3.zero, (controlID, position, rotation, hSize, eventType) => 
                 {
                     Handles.SphereHandleCap(controlID, position, rotation, hSize, EventType.Repaint);
                     if(controlID == GUIUtility.hotControl && GUIUtility.hotControl != 0)

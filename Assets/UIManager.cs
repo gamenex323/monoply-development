@@ -26,4 +26,20 @@ public class UIManager : MonoBehaviour
     {
         
     }
+
+    public void UpdateMoney(float money)
+    {
+
+        StartCoroutine(TypewriterEffect(globalMoney, GlobalData.GetMoney().ToString()));
+    }
+
+    private IEnumerator TypewriterEffect(TextMeshProUGUI textElement, string targetText, float delay = 0.05f)
+    {
+        textElement.text = ""; // Clear current text
+        foreach (char c in targetText)
+        {
+            textElement.text += c; // Append each character
+            yield return new WaitForSeconds(delay); // Wait before adding the next character
+        }
+    }
 }

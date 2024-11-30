@@ -59,13 +59,13 @@ public class TileManager : MonoBehaviour
     private void GiveMoneyReward()
     {
         // Implement logic to give money reward
-        PlayerPrefsUtility.Set(PlayerPrefsUtility.money, currentTileInfo.money);
+        GlobalData.SetMoney(GlobalData.GetMoney()+currentTileInfo.money);
         moneyText.text = currentTileInfo.money.ToString();
-        GlobalData.ChangeMoney(currentTileInfo.money);
+        UIManager.instance.UpdateMoney(currentTileInfo.money);
         UIManager.instance.moneyPanel.gameObject.SetActive(true);
         Debug.Log("Giving money reward!");
     }
-
+    //
     private void GiveAttackReward()
     {
         UIManager.instance.attackPanel.gameObject.SetActive(true);
@@ -84,7 +84,8 @@ public class TileManager : MonoBehaviour
 
     private void GiveShieldReward()
     {
-        PlayerPrefsUtility.Set(PlayerPrefsUtility.shields, PlayerPrefsUtility.Get(PlayerPrefsUtility.shields,0) + currentTileInfo.shield);
+        GlobalData.SetShields(GlobalData.GetShields() + currentTileInfo.shield);
+
         shieldText.text = currentTileInfo.shield.ToString();
         UIManager.instance.shieldPanel.gameObject.SetActive(true);
 
