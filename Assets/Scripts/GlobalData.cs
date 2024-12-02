@@ -17,15 +17,15 @@ public static class GlobalData
 
     // Set money value and save it to PlayerPrefs
 
-    public static void SetMoney(float money)
+    public static void SetMoney(int money)
     {
-        PlayerPrefs.SetFloat(GlobalData.MoneyKey, money);
+        PlayerPrefs.SetInt(GlobalData.MoneyKey, money);
         PlayerPrefs.Save();
     }
     // Get money value from PlayerPrefs
-    public static float GetMoney()
+    public static int GetMoney()
     {
-        return PlayerPrefs.GetFloat(MoneyKey, 0f);
+        return PlayerPrefs.GetInt(MoneyKey, 0);
     }
 
     // Set shield value and save it to PlayerPrefs

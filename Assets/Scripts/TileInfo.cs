@@ -6,16 +6,16 @@ public class TileInfo : MonoBehaviour
 {
     // Start is called before the first frame update
     public GlobalData.TileName tileName;
-    public float money;
+    public int money;
     public int shield;
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }

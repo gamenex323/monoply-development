@@ -15,6 +15,7 @@ public class ButtonAnimation : MonoBehaviour
         {
             // Start a popup animation when the object is enabled
             PopupAnimation();
+            //
         }
     }
 

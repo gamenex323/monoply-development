@@ -21,6 +21,7 @@ public class BuildManager : MonoBehaviour
 {
     public Building[] buildings;  // Array of buildings in the scene
     private TextMeshProUGUI moneyText;  // UI Text to show player's money
+    public int playerMoney = 0;
 
     void Start()
     {
@@ -43,7 +44,7 @@ public class BuildManager : MonoBehaviour
     public void OnUpgradeClick(int buildingIndex)
     {
         Building building = buildings[buildingIndex];
-        int playerMoney = GetMoney();  // Get the player's current money from PlayerPrefs
+        playerMoney = GlobalData.GetMoney();  // Get the player's current money from PlayerPrefs
 
         if (building.currentLevel < building.maxLevel)
         {
@@ -52,7 +53,7 @@ public class BuildManager : MonoBehaviour
             {
                 // Deduct money and upgrade the building
                 playerMoney -= upgradeCost;
-                SetMoney(playerMoney);  // Save the updated money to PlayerPrefs
+                GlobalData.SetMoney(playerMoney);  // Save the updated money to PlayerPrefs
 
                 // Change the building object for the new level
                 ChangeBuildingAppearance(building);
@@ -80,7 +81,7 @@ public class BuildManager : MonoBehaviour
     // Update the player's money text
     void UpdateMoneyText()
     {
-        int playerMoney = GetMoney();  // Get the player's money
+        int playerMoney = GlobalData.GetMoney();  // Get the player's money
         if (moneyText != null)
         {
             moneyText.text = "Money: " + playerMoney.ToString();
@@ -117,17 +118,10 @@ public class BuildManager : MonoBehaviour
     }
 
     // Method to get the player's money from PlayerPrefs
-    public int GetMoney()
-    {
-        return PlayerPrefs.GetInt("PlayerMoney", 1000);  // Default value of 1000 if not set
-    }
+
 
     // Method to set the player's money in PlayerPrefs
-    public void SetMoney(int amount)
-    {
-        PlayerPrefs.SetInt("PlayerMoney", amount);
-        PlayerPrefs.Save();
-    }
+
 
     // Method to change the appearance of the building based on its level
     void ChangeBuildingAppearance(Building building)
