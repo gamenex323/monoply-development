@@ -64,6 +64,7 @@ public class TileManager : MonoBehaviour
         UIManager.instance.UpdateMoney(currentTileInfo.money);
         UIManager.instance.moneyPanel.gameObject.SetActive(true);
         Debug.Log("Giving money reward!");
+        
     }
     //
     private void GiveAttackReward()

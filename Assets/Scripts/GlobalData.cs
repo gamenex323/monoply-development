@@ -21,6 +21,7 @@ public static class GlobalData
     {
         PlayerPrefs.SetInt(GlobalData.MoneyKey, money);
         PlayerPrefs.Save();
+        PlayfabLogin.login.SubmitScore(GetMoney());
     }
     // Get money value from PlayerPrefs
     public static int GetMoney()
