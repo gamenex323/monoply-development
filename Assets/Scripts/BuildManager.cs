@@ -45,7 +45,7 @@ public class BuildManager : MonoBehaviour
     {
         Building building = buildings[buildingIndex];
         playerMoney = GlobalData.GetMoney();  // Get the player's current money from PlayerPrefs
-        Debug.Log("Current building Index " + buildingIndex + "Current Update "+ building.currentLevel);
+        Debug.Log("Current building Index " + buildingIndex + "Current Update " + building.currentLevel);
         if (building.currentLevel < building.maxLevel)
         {
             int upgradeCost = building.upgradeCosts[building.currentLevel];
@@ -84,7 +84,7 @@ public class BuildManager : MonoBehaviour
         int playerMoney = GlobalData.GetMoney();  // Get the player's money
         if (moneyText != null)
         {
-            moneyText.text = "Money: " + playerMoney.ToString();
+            moneyText.text = playerMoney.ToString();
         }
     }
 

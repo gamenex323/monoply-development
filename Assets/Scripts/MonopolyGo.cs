@@ -97,7 +97,7 @@ public class MonopolyGo : MonoBehaviour
     {
         TileManager.instance.GiveTileReward(tiles[tileIndex].GetComponent<TileInfo>());
         Debug.Log("Landed on tile: " + tileIndex);
-        Invoke(nameof(StepPanelDisable), 2f);
+        //Invoke(nameof(StepPanelDisable), 2f);
     }
 
     void StepPanelDisable()
