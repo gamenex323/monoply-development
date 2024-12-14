@@ -9,17 +9,24 @@ public static class GlobalData
         Money,
         Attack,
         BankHiest,
-        Shield
+        Shield,
+        CommunityChest,
+        Visiting,
+        DecreaseMoney,
+        GoToJail,
+        Chance,
+        Parking
     }
 
     public static string MoneyKey = "PlayerMoney";
     public static string ShieldKey = "PlayerShields";
+    public static string CommmunityChest = "CommmunityChest";
 
     // Set money value and save it to PlayerPrefs
 
     public static void SetMoney(int money)
     {
-        PlayerPrefs.SetInt(GlobalData.MoneyKey, money);
+        PlayerPrefs.SetInt(MoneyKey, GetMoney()+ money);
         PlayerPrefs.Save();
         PlayfabLogin.login.SubmitScore(GetMoney());
     }

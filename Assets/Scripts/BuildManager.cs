@@ -52,8 +52,7 @@ public class BuildManager : MonoBehaviour
             if (playerMoney >= upgradeCost)
             {
                 // Deduct money and upgrade the building
-                playerMoney -= upgradeCost;
-                GlobalData.SetMoney(playerMoney);  // Save the updated money to PlayerPrefs
+                UIManager.instance.UpdateMoney(-upgradeCost);
 
                 // Change the building object for the new level
                 ChangeBuildingAppearance(building);

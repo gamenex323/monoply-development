@@ -23,6 +23,20 @@ public class TileManager : MonoBehaviour
     [Header("Attack Reward")]
     public TextMeshProUGUI attack;
 
+    [Header("CommunityChest Reward")]
+    public TextMeshProUGUI GiveCommunityChestText;
+
+    [Header("Chance Reward")]
+    public GameObject[] ChancePanels;
+    public enum ChanceType
+    {
+        GrandFatherGaveMoney,
+        EightSpin,
+        NineSpin,
+        TourToHeist,
+        TourToShutDown
+    }
+
     void Start()
     {
         instance = this;
@@ -49,6 +63,18 @@ public class TileManager : MonoBehaviour
             case GlobalData.TileName.Shield:
                 GiveShieldReward();
                 break;
+            case GlobalData.TileName.CommunityChest:
+                GiveCommunityChest();
+                break;            
+            case GlobalData.TileName.DecreaseMoney:
+                DecreaseMoney();
+                break;           
+            case GlobalData.TileName.Chance:
+                GiveChance();
+                break;            
+            case GlobalData.TileName.Parking:
+                Parking();
+                break;
 
             default:
                 Debug.LogError("Unknown tile name: " + tileName);
@@ -59,7 +85,7 @@ public class TileManager : MonoBehaviour
     private void GiveMoneyReward()
     {
         // Implement logic to give money reward
-        GlobalData.SetMoney(GlobalData.GetMoney()+currentTileInfo.money);
+        UIManager.instance.UpdateMoney(currentTileInfo.money);
         moneyText.text = currentTileInfo.money.ToString();
         UIManager.instance.UpdateMoney(currentTileInfo.money);
         UIManager.instance.moneyPanel.gameObject.SetActive(true);
@@ -93,6 +119,36 @@ public class TileManager : MonoBehaviour
         // Implement logic for shield reward
         Debug.Log("Giving shield reward!");
     }
+    private void GiveCommunityChest()
+    {
+        PlayerPrefs.SetInt(GlobalData.CommmunityChest, PlayerPrefs.GetInt(GlobalData.CommmunityChest) + 1);
+        GiveCommunityChestText.text = PlayerPrefs.GetInt(GlobalData.CommmunityChest).ToString();
+        // Implement logic for shield reward
+        Debug.Log("Giving CommmunityChest reward!");
+    }
+
+    private void GiveChance()
+    {
+        int rndChance = UnityEngine.Random.Range(0,ChancePanels.Length);
+        ChancePanels[rndChance].SetActive(true);
+        // Implement logic for shield reward
+        Debug.Log("Giving Chance reward!");
+    }
+
+    private void DecreaseMoney()
+    {
+        UIManager.instance.UpdateMoney(currentTileInfo.money);
+
+        // Implement logic for shield reward
+        Debug.Log("Decrease Money!");
+    }
+
+    private void Parking()
+    {
+        Debug.Log("Parking!");
+    }
+
+
 
 
 }

@@ -9,9 +9,11 @@ public class UIManager : MonoBehaviour
     public GameObject moneyPanel, bankHiestPanel, attackPanel, shieldPanel;
     public GameObject[] AllRewardPanels;
     public TextMeshProUGUI globalMoney;
+    public  float durationOfMoneyEffect = 2f;
     void Start()
     {
         instance = this;
+        UpdateMoney(0);
     }
 
     public void DisableAllRewardedPanels()
@@ -27,19 +29,33 @@ public class UIManager : MonoBehaviour
         
     }
 
-    public void UpdateMoney(float money)
+    public void UpdateMoney(int money)
     {
-
-        StartCoroutine(TypewriterEffect(globalMoney, GlobalData.GetMoney().ToString()));
+        int currentMoney = GlobalData.GetMoney();
+        GlobalData.SetMoney(money);
+        int targetMoney = GlobalData.GetMoney();
+        print("Money Update Complete");
+        StartCoroutine(TypewriterEffect(globalMoney, currentMoney, targetMoney, durationOfMoneyEffect));
     }
 
-    private IEnumerator TypewriterEffect(TextMeshProUGUI textElement, string targetText, float delay = 0.05f)
+    private IEnumerator TypewriterEffect(TextMeshProUGUI textElement, float currentMoney, float targetMoney, float duration)
     {
-        textElement.text = ""; // Clear current text
-        foreach (char c in targetText)
+        print("Money Update Complete");
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
         {
-            textElement.text += c; // Append each character
-            yield return new WaitForSeconds(delay); // Wait before adding the next character
+            elapsedTime += Time.deltaTime;
+            float progress = Mathf.Clamp01(elapsedTime / duration); // Ensure progress stays between 0 and 1
+            float updatedMoney = Mathf.Lerp(currentMoney, targetMoney, progress);
+
+            textElement.text = Mathf.RoundToInt(updatedMoney).ToString();
+            yield return null;
         }
+
+        // Ensure the final value is set to targetMoney
+        textElement.text = Mathf.RoundToInt(targetMoney).ToString();
+        print("Money Update Complete");
     }
+
 }
