@@ -6,6 +6,7 @@ public static class GlobalData
 {
     public enum TileName
     {
+        Go,
         Money,
         Attack,
         BankHiest,
@@ -15,7 +16,9 @@ public static class GlobalData
         DecreaseMoney,
         GoToJail,
         Chance,
-        Parking
+        Parking,
+        Shutdown,
+        WaterSupply
     }
 
     public static string MoneyKey = "PlayerMoney";
@@ -26,7 +29,7 @@ public static class GlobalData
 
     public static void SetMoney(int money)
     {
-        PlayerPrefs.SetInt(MoneyKey, GetMoney()+ money);
+        PlayerPrefs.SetInt(MoneyKey, GetMoney() + money);
         PlayerPrefs.Save();
         PlayfabLogin.login.SubmitScore(GetMoney());
     }

@@ -109,5 +109,9 @@ public class MonopolyGo : MonoBehaviour
     void CheckTilePrize(int tileIndex)
     {
         Debug.Log("Passed tile: " + tileIndex);
+        if (tiles[tileIndex].GetComponent<TileInfo>().tileName == GlobalData.TileName.Go)
+        {
+            UIManager.instance.UpdateMoney(tiles[tileIndex].GetComponent<TileInfo>().money);
+        }
     }
 }

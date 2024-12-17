@@ -9,7 +9,8 @@ public class UIManager : MonoBehaviour
     public GameObject moneyPanel, bankHiestPanel, attackPanel, shieldPanel;
     public GameObject[] AllRewardPanels;
     public TextMeshProUGUI globalMoney;
-    public  float durationOfMoneyEffect = 2f;
+    public TextMeshProUGUI moneyPanelText;
+    public float durationOfMoneyEffect = 2f;
     void Start()
     {
         instance = this;
@@ -26,7 +27,7 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void UpdateMoney(int money)

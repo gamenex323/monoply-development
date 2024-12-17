@@ -55,7 +55,6 @@ public class TileManager : MonoBehaviour
             case GlobalData.TileName.Attack:
                 GiveAttackReward();
                 break;
-
             case GlobalData.TileName.BankHiest:
                 GiveBankHeistReward();
                 break;
@@ -65,13 +64,13 @@ public class TileManager : MonoBehaviour
                 break;
             case GlobalData.TileName.CommunityChest:
                 GiveCommunityChest();
-                break;            
+                break;
             case GlobalData.TileName.DecreaseMoney:
                 DecreaseMoney();
-                break;           
+                break;
             case GlobalData.TileName.Chance:
                 GiveChance();
-                break;            
+                break;
             case GlobalData.TileName.Parking:
                 Parking();
                 break;
@@ -85,12 +84,15 @@ public class TileManager : MonoBehaviour
     private void GiveMoneyReward()
     {
         // Implement logic to give money reward
+        UIManager.instance.moneyPanelText.GetComponent<TextMeshProUGUI>().color = Color.green;
+
+        UIManager.instance.moneyPanelText.text = currentTileInfo.money.ToString();
         UIManager.instance.UpdateMoney(currentTileInfo.money);
         moneyText.text = currentTileInfo.money.ToString();
         UIManager.instance.UpdateMoney(currentTileInfo.money);
         UIManager.instance.moneyPanel.gameObject.SetActive(true);
         Debug.Log("Giving money reward!");
-        
+
     }
     //
     private void GiveAttackReward()
@@ -129,7 +131,7 @@ public class TileManager : MonoBehaviour
 
     private void GiveChance()
     {
-        int rndChance = UnityEngine.Random.Range(0,ChancePanels.Length);
+        int rndChance = UnityEngine.Random.Range(0, ChancePanels.Length);
         ChancePanels[rndChance].SetActive(true);
         // Implement logic for shield reward
         Debug.Log("Giving Chance reward!");
@@ -138,7 +140,9 @@ public class TileManager : MonoBehaviour
     private void DecreaseMoney()
     {
         UIManager.instance.UpdateMoney(currentTileInfo.money);
-
+        UIManager.instance.moneyPanelText.text = currentTileInfo.money.ToString();
+        UIManager.instance.moneyPanelText.GetComponent<TextMeshProUGUI>().color = Color.red;
+        UIManager.instance.moneyPanel.SetActive(true);
         // Implement logic for shield reward
         Debug.Log("Decrease Money!");
     }
