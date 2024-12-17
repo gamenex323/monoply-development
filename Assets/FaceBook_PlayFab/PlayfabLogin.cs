@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class PlayfabLogin : MonoBehaviour
 {
+    [SerializeField] PhotonAuth photonAuth;
     public static PlayfabLogin login;
     private void Awake()
     {
@@ -33,6 +34,7 @@ public class PlayfabLogin : MonoBehaviour
     void OnLoginSuccess(LoginResult result)
     {
         Debug.Log("Login Successful!");
+        photonAuth.AuthenticateWithPhoton(result.SessionTicket);
     }
 
     void OnLoginFailure(PlayFabError error)
