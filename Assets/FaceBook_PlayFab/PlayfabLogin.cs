@@ -6,25 +6,32 @@ using UnityEngine;
 
 public class PlayfabLogin : MonoBehaviour
 {
-    [SerializeField] PhotonAuth photonAuth;
     public static PlayfabLogin login;
     private void Awake()
     {
         if(login == null)
         {
             login = this;
+            DontDestroyOnLoad(this);
         }
     }
     void Start()
     {
-        Login();
+        //Login();
     }
 
-    void Login()
+    public void Login()
     {
+        if (GlobalData.NickName == "")
+        {
+            string name = "Guest " + Random.Range(1, 9999);
+            GlobalData.NickName = name;
+        }
+
+        
         var request = new LoginWithCustomIDRequest
         {
-            CustomId = "Player_123", // Replace with a unique player identifier
+            CustomId = GlobalData.NickName, // Replace with a unique player identifier
             CreateAccount = true
         };
 
@@ -34,7 +41,7 @@ public class PlayfabLogin : MonoBehaviour
     void OnLoginSuccess(LoginResult result)
     {
         Debug.Log("Login Successful!");
-        photonAuth.AuthenticateWithPhoton(result.SessionTicket);
+        PhotonAuth.Instance.AuthenticateWithPlayFab();
     }
 
     void OnLoginFailure(PlayFabError error)
@@ -82,15 +89,15 @@ public class PlayfabLogin : MonoBehaviour
     void OnLeaderboardSuccess(GetLeaderboardResult result)
     {
         Debug.Log("Leaderboard fetched successfully!");
-        DeleteLeaderBoard();
+        UIManager.instance.DeleteLeaderBoard();
         foreach (var entry in result.Leaderboard)
         {
             Debug.Log($"Rank: {entry.Position}, Player: {entry.DisplayName ?? entry.PlayFabId}, Score: {entry.StatValue}");
-            GameObject card = Instantiate(ScoreCardPrefab, Content);
+            GameObject card = Instantiate(UIManager.instance.ScoreCardPrefab, UIManager.instance.Content);
             card.GetComponent<CardInfo>().rank.text = (entry.Position + 1).ToString();
             card.GetComponent<CardInfo>().playerName.text = entry.DisplayName ?? entry.PlayFabId;
             card.GetComponent<CardInfo>().playerScore.text = entry.StatValue.ToString();
-            LeaderboardCards.Add(card);
+            UIManager.instance.LeaderboardCards.Add(card);
         }
     }
 
@@ -98,15 +105,5 @@ public class PlayfabLogin : MonoBehaviour
     {
         Debug.LogError("Failed to fetch leaderboard: " + error.ErrorMessage);
     }
-    [SerializeField] GameObject ScoreCardPrefab;
-    [SerializeField] Transform Content;
-    [SerializeField] List<GameObject> LeaderboardCards = new List<GameObject>();
-    public void DeleteLeaderBoard()
-    {
-        for (int i = 0; i < LeaderboardCards.Count; i++)
-        {
-            Destroy(LeaderboardCards[i]);
-        }
-        LeaderboardCards = new List<GameObject>();
-    }
+   
 }

@@ -20,7 +20,7 @@ public class MonopolyGo : MonoBehaviour
 
     void Start()
     {
-        goButton.onClick.AddListener(OnGoButtonClicked);
+        //goButton.onClick.AddListener(OnGoButtonClicked);
     }
 
     void OnGoButtonClicked()

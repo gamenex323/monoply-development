@@ -103,7 +103,7 @@ public class FacebookManager : MonoBehaviour
                 Debug.Log($"Granted Permission: {perm}");
             }
             LoggedIn = true;
-
+            GlobalData.NickName = aToken.UserId;
             // Additional post-login logic (if needed)
             HandlePostLogin();
         }

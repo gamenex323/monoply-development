@@ -58,4 +58,19 @@ public static class GlobalData
 
     // Coroutine for typewriter effect
 
+    #region Photon Data 
+    private static string _NickName = "NickName";
+    private static string _MaxPlayer = "MaxPlayer";
+    public static string NickName
+    {
+        set { PlayerPrefs.SetString(_NickName, value); }
+        get { return PlayerPrefs.GetString(_NickName); }
+    }
+    public static int MaxPlayer
+    {
+        set { PlayerPrefs.SetInt(_MaxPlayer, value); }
+        get { return PlayerPrefs.GetInt(_MaxPlayer); }
+    }
+    #endregion
+
 }

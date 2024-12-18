@@ -1,3 +1,5 @@
+using Photon.Pun;
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -15,8 +17,10 @@ public class UIManager : MonoBehaviour
     {
         instance = this;
         UpdateMoney(0);
+        currentMaxPlayerIndex = GlobalData.MaxPlayer;
+        UpdatePlayerData();
     }
-
+    
     public void DisableAllRewardedPanels()
     {
         foreach (GameObject panel in AllRewardPanels)
@@ -58,5 +62,87 @@ public class UIManager : MonoBehaviour
         textElement.text = Mathf.RoundToInt(targetMoney).ToString();
         print("Money Update Complete");
     }
+    [SerializeField] public GameObject ScoreCardPrefab;
+    [SerializeField] public Transform Content;
+    [SerializeField] public List<GameObject> LeaderboardCards = new List<GameObject>();
+    public void DeleteLeaderBoard()
+    {
+        for (int i = 0; i < LeaderboardCards.Count; i++)
+        {
+            Destroy(LeaderboardCards[i]);
+        }
+        LeaderboardCards = new List<GameObject>();
+    }
 
+    #region Developer 2
+    public int[] MaxPlayer = { 2, 4 };
+    [SerializeField] TextMeshProUGUI PlayerName;
+    [SerializeField] GameObject CreateRoomPanel;
+    [SerializeField] GameObject PlayerListPanel;
+    [SerializeField] TextMeshProUGUI RoomNameText;
+    [SerializeField] GameObject PlayerPrefab;
+    [SerializeField] Transform PlayerContent;
+    public TextMeshProUGUI MaxPlayerText;
+    private void UpdatePlayerData()
+    {
+        if (PhotonNetwork.IsConnected)
+            PlayerName.text = PhotonNetwork.LocalPlayer.NickName;
+        MaxPlayerText.text = GlobalData.MaxPlayer.ToString();
+    }
+    int currentMaxPlayerIndex = 0;
+    public void onNextChangeMaxPlayer()
+    {
+        currentMaxPlayerIndex++;
+        if(currentMaxPlayerIndex >= MaxPlayer.Length)
+        {
+            currentMaxPlayerIndex = 0;
+        }
+        MaxPlayerText.text = MaxPlayer[currentMaxPlayerIndex].ToString();
+        GlobalData.MaxPlayer = currentMaxPlayerIndex;
+    }
+    public void OnPrevChangeMaxPlayer()
+    {
+        currentMaxPlayerIndex--;
+        if(currentMaxPlayerIndex < 0)
+        {
+            currentMaxPlayerIndex = MaxPlayer.Length - 1;
+        }
+        MaxPlayerText.text = MaxPlayer[currentMaxPlayerIndex].ToString();
+        GlobalData.MaxPlayer = currentMaxPlayerIndex;
+    }
+    public void OnClickOnCreateRoom()
+    {
+        if (PhotonNetwork.InLobby)
+        {
+            //string roomName = "Room# " + Random.Range(1, 9999);
+            string roomName = "Room#";
+            PhotonAuth.Instance.JoinOrCreateRoom(roomName, GlobalData.MaxPlayer);
+        }
+    }
+    List<GameObject> playerList = new List<GameObject>();
+    public void RoomPlayerList()
+    {
+        ClearPlayerList();
+        PlayerListPanel.SetActive(true);
+        CreateRoomPanel.SetActive(false);
+        RoomNameText.text = PhotonNetwork.CurrentRoom.Name;
+        Player[] players = PhotonNetwork.PlayerList;
+        for (int i = 0; i < players.Length; i++)
+        {
+            GameObject Init = Instantiate(PlayerPrefab, PlayerContent);
+            Init.GetComponent<PlayerInfo>().TextPlayerNumber.text = (i + 1).ToString();
+            Init.GetComponent<PlayerInfo>().TextPlayerName.text = players[i].NickName.ToString();
+            playerList.Add(Init);
+            //Debug.Log($"Player Name: {players[i].NickName}, Master Client: {players[i].IsMasterClient}");
+        }
+    }
+    void ClearPlayerList()
+    {
+        for (int i = 0; i < playerList.Count; i++)
+        {
+            Destroy(playerList[i]);
+        }
+        playerList = new List<GameObject>();
+    }
+    #endregion
 }
