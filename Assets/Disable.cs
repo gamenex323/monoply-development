@@ -6,6 +6,7 @@ public class Disable : MonoBehaviour
 {
     // Start is called before the first frame update
     public float falseTime = 2f;
+    public GameObject objectToFalse;
     void Start()
     {
         Invoke(nameof(DisableThis), falseTime);
@@ -14,6 +15,9 @@ public class Disable : MonoBehaviour
     // Update is called once per frame
     void DisableThis()
     {
-        gameObject.SetActive(false);
+        if (objectToFalse)
+            objectToFalse.SetActive(false);
+        else
+            gameObject.SetActive(false);
     }
 }

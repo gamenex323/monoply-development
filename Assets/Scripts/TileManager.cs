@@ -36,6 +36,19 @@ public class TileManager : MonoBehaviour
     public TextMeshProUGUI chanceDescription;
 
     public Chances[] communityChancesData;
+
+
+    [Header("Jail")]
+    public TextMeshProUGUI diceNumber;
+    public GameObject diceNumBox;
+    public GameObject youAreFree;
+    public int diceToRelease;
+    public int fineToRelease;
+    public GameObject JaiLPanel;
+    public TextMeshProUGUI JailTitle;
+    public TextMeshProUGUI JailDescription;
+
+    public JailData[] jailData;
     [System.Serializable]
     public class Chances
     {
@@ -49,6 +62,15 @@ public class TileManager : MonoBehaviour
         public string Title;
         public string Description;
         public int money;
+    }
+
+    [System.Serializable]
+    public class JailData
+    {
+        public string Title;
+        public string Description;
+        public int diceToRelease;
+        public int fineToRelease;
     }
     public enum ChanceType
     {
@@ -95,6 +117,9 @@ public class TileManager : MonoBehaviour
                 break;
             case GlobalData.TileName.Parking:
                 Parking();
+                break;
+            case GlobalData.TileName.GoToJail:
+                GoToJail();
                 break;
 
             default:
@@ -175,7 +200,99 @@ public class TileManager : MonoBehaviour
 
     private void Parking()
     {
-        Debug.Log("Parking!");
+        UIManager.instance.UpdateMoney(currentTileInfo.money);
+        UIManager.instance.moneyPanelText.text = currentTileInfo.money.ToString();
+        UIManager.instance.moneyPanelText.GetComponent<TextMeshProUGUI>().color = Color.red;
+        UIManager.instance.moneyPanel.SetActive(true);
+    }
+
+    private void GoToJail()
+    {
+        switch (MonopolyGo.instance.playerClass)
+        {
+            case MonopolyGo.PlayerClass.UpperClass:
+                JailDescription.text = jailData[0].Description;
+                JailTitle.text = jailData[0].Title;
+                diceToRelease = jailData[0].diceToRelease;
+                fineToRelease = jailData[0].fineToRelease;
+                JaiLPanel.SetActive(true);
+                break;
+            case MonopolyGo.PlayerClass.MiddleClass:
+                JailDescription.text = jailData[1].Description;
+                JailTitle.text = jailData[1].Title;
+                diceToRelease = jailData[1].diceToRelease;
+                fineToRelease = jailData[1].fineToRelease;
+                JaiLPanel.SetActive(true);
+                break;
+            case MonopolyGo.PlayerClass.WorkingClass:
+                JailDescription.text = jailData[2].Description;
+                JailTitle.text = jailData[2].Title;
+                diceToRelease = jailData[2].diceToRelease;
+                fineToRelease = jailData[2].fineToRelease;
+                JaiLPanel.SetActive(true);
+                break;
+            case MonopolyGo.PlayerClass.LowerClass:
+                JailDescription.text = jailData[3].Description;
+                JailTitle.text = jailData[3].Title;
+                diceToRelease = jailData[3].diceToRelease;
+                fineToRelease = jailData[3].fineToRelease;
+                JaiLPanel.SetActive(true);
+                break;
+        }
+    }
+
+    public void PayJailFine()
+    {
+        UIManager.instance.UpdateMoney(-fineToRelease);
+        JaiLPanel.SetActive(false);
+        print("ReleaseFromJail");
+
+    }
+    public void RollDiceToRelease()
+    {
+        int rollDiceNumber = 0;
+        diceNumBox.SetActive(true);
+        if (MonopolyGo.instance.playerClass == MonopolyGo.PlayerClass.UpperClass || MonopolyGo.instance.playerClass == MonopolyGo.PlayerClass.LowerClass)
+        {
+            rollDiceNumber = Random.RandomRange(0, 7);
+            if (rollDiceNumber % 2 == 0)
+            {
+                print("ReleaseFromJail");
+                JaiLPanel.SetActive(false);
+                diceToRelease = 0;
+                Debug.Log(rollDiceNumber + " is even.");
+            }
+            else
+            {
+                Debug.Log(rollDiceNumber + " is odd.");
+            }
+
+            diceToRelease--;
+            if (diceToRelease <= 0)
+            {
+                print("ReleaseFromJail");
+                JaiLPanel.SetActive(false);
+                youAreFree.SetActive(false);
+            }
+        }
+        else
+        {
+            rollDiceNumber = Random.RandomRange(0, 7);
+            if (rollDiceNumber % 2 == 0)
+            {
+                print("ReleaseFromJail");
+                JaiLPanel.SetActive(false);
+                youAreFree.SetActive(false);
+
+                diceToRelease = 0;
+                Debug.Log(rollDiceNumber + " is even.");
+            }
+            else
+            {
+                Debug.Log(rollDiceNumber + " is odd.");
+            }
+        }
+
     }
 
 

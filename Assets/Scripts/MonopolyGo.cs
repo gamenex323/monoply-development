@@ -18,8 +18,14 @@ public class MonopolyGo : MonoBehaviour
 
     private int currentTileIndex = 0;
 
+    public PlayerClass playerClass;
+
+    public static MonopolyGo instance;
+
     void Start()
     {
+        if (!instance)
+            instance = this;
         goButton.onClick.AddListener(OnGoButtonClicked);
     }
 
@@ -113,5 +119,13 @@ public class MonopolyGo : MonoBehaviour
         {
             UIManager.instance.UpdateMoney(tiles[tileIndex].GetComponent<TileInfo>().money);
         }
+    }
+
+    public enum PlayerClass
+    {
+        UpperClass,
+        MiddleClass,
+        WorkingClass,
+        LowerClass
     }
 }
