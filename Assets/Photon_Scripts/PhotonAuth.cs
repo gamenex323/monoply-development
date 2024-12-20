@@ -113,15 +113,15 @@ public class PhotonAuth : MonoBehaviourPunCallbacks
         //JoinOrCreateRoom("TestRoom");
     }
 
-    public void JoinOrCreateRoom(string roomName, int maxPlayer)
-    {
-        RoomOptions roomOptions = new RoomOptions
-        {
-            MaxPlayers = maxPlayer,
-        };
+    //public void JoinOrCreateRoom(string roomName, int maxPlayer)
+    //{
+    //    RoomOptions roomOptions = new RoomOptions
+    //    {
+    //        MaxPlayers = maxPlayer,
+    //    };
         
-        PhotonNetwork.JoinOrCreateRoom(roomName, roomOptions, TypedLobby.Default);
-    }
+    //    PhotonNetwork.JoinOrCreateRoom(roomName, roomOptions, TypedLobby.Default);
+    //}
 
     public override void OnJoinedRoom()
     {
@@ -129,7 +129,14 @@ public class PhotonAuth : MonoBehaviourPunCallbacks
         Debug.Log("Current Room " +PhotonNetwork.CurrentRoom.Name);
         UIManager.instance.RoomPlayerList();
     }
-
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        UIManager.instance.RoomPlayerList();
+    }
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        UIManager.instance.RoomPlayerList();
+    }
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
         Debug.Log("Room List Update");
@@ -139,5 +146,34 @@ public class PhotonAuth : MonoBehaviourPunCallbacks
         {
             Debug.Log($"Room Name: {room.Name}, Player Count: {room.PlayerCount}/{room.MaxPlayers}");
         }
+    }
+
+
+    public void JoinOrCreateRoom()
+    {
+        // Attempt to join a random room
+        PhotonNetwork.JoinRandomRoom();
+    }
+
+    // Callback if joining a random room fails
+    public override void OnJoinRandomFailed(short returnCode, string message)
+    {
+        Debug.Log("Failed to join a random room. Creating a new room...");
+
+        // Create a new room with some basic options
+        RoomOptions roomOptions = new RoomOptions
+        {
+            MaxPlayers = UIManager.instance.MaxPlayer[GlobalData.MaxPlayer], // Maximum players in the room
+            IsVisible = true, // Make the room visible in the room list
+            IsOpen = true // Allow others to join
+        };
+
+        PhotonNetwork.CreateRoom(null, roomOptions); // Pass null to generate a random room name
+    }
+
+    // Callback when a room is created successfully
+    public override void OnCreatedRoom()
+    {
+        Debug.Log("Successfully created a new room!");
     }
 }

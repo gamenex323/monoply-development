@@ -116,7 +116,8 @@ public class UIManager : MonoBehaviour
         {
             string roomName = "Room# " + Random.Range(1, 9999);
             //string roomName = "Room#";
-            PhotonAuth.Instance.JoinOrCreateRoom(roomName, GlobalData.MaxPlayer);
+            //PhotonAuth.Instance.JoinOrCreateRoom(roomName, GlobalData.MaxPlayer);
+            PhotonAuth.Instance.JoinOrCreateRoom();
         }
     }
     List<GameObject> playerList = new List<GameObject>();
