@@ -47,6 +47,7 @@ public class MonopolyGo : MonoBehaviour
         for (int i = 0; i < steps; i++)
         {
             currentTileIndex = (currentTileIndex + 1) % tiles.Length;
+            print("Tile To Jump: " + currentTileIndex);
             Vector3 targetPosition = tiles[currentTileIndex].position;
 
             // Move to the next tile with a jump

@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class BankMetroGame : MonoBehaviour
 {
@@ -22,7 +23,8 @@ public class BankMetroGame : MonoBehaviour
     public int moneyHiestCount = -1;
     public int gemHiestCount = -1;
     public int crownHiestCount = -1;
-
+    public int tempRewardOnWin;
+    public TextMeshProUGUI winAmount;
     public GameObject bankHiestComplete;
     private void Start()
     {
@@ -69,7 +71,7 @@ public class BankMetroGame : MonoBehaviour
                 if (gemHiestCount == 2)
                 {
                     Invoke(nameof(CompletePanel), 1.5f);
-
+                    tempRewardOnWin = economyGemsReward;
                 }
                 break;
             case RevealRewardType.Money:
@@ -77,6 +79,7 @@ public class BankMetroGame : MonoBehaviour
                 {
                     Invoke(nameof(CompletePanel), 1.5f);
 
+                    tempRewardOnWin = economyMoneyReward;
 
                 }
 
@@ -85,6 +88,7 @@ public class BankMetroGame : MonoBehaviour
                 if (crownHiestCount == 2)
                 {
                     Invoke(nameof(CompletePanel), 1.5f);
+                    tempRewardOnWin = economyGemsReward;
 
                 }
 
@@ -95,7 +99,13 @@ public class BankMetroGame : MonoBehaviour
 
     void CompletePanel()
     {
+        winAmount.text = tempRewardOnWin.ToString();
         bankHiestComplete.SetActive(true);
+    }
+    public void CollectMoney()
+    {
+        UIManager.instance.UpdateMoney(tempRewardOnWin);
+        bankHiestComplete.SetActive(false);
     }
 
 }

@@ -121,6 +121,9 @@ public class TileManager : MonoBehaviour
             case GlobalData.TileName.GoToJail:
                 GoToJail();
                 break;
+            case GlobalData.TileName.Go:
+                GiveMoneyReward();
+                break;
 
             default:
                 Debug.LogError("Unknown tile name: " + tileName);
@@ -128,6 +131,18 @@ public class TileManager : MonoBehaviour
         }
     }
 
+    private void OnLandGo()
+    {
+        UIManager.instance.moneyPanelText.GetComponent<TextMeshProUGUI>().color = Color.green;
+
+        UIManager.instance.moneyPanelText.text = currentTileInfo.money.ToString();
+        UIManager.instance.UpdateMoney(currentTileInfo.money);
+        moneyText.text = currentTileInfo.money.ToString();
+        UIManager.instance.UpdateMoney(currentTileInfo.money);
+        Debug.Log("Giving Go reward!");
+
+        // Also one extra dice
+    }
     private void GiveMoneyReward()
     {
         // Implement logic to give money reward
@@ -173,6 +188,7 @@ public class TileManager : MonoBehaviour
         int rndChance = UnityEngine.Random.Range(0, communityResourcesData.Length);
         communityResourceDesciption.text = communityResourcesData[rndChance].Description;
         communityResourceTitle.text = communityResourcesData[rndChance].Title;
+        communityResourcesPanel.SetActive(true);
         UIManager.instance.UpdateMoney(communityResourcesData[rndChance].money);
         // Implement logic for shield reward
         Debug.Log("Giving Community Resource Reward!");
@@ -183,6 +199,7 @@ public class TileManager : MonoBehaviour
         int rndChance = UnityEngine.Random.Range(0, communityChancesData.Length);
         chanceDescription.text = communityChancesData[rndChance].Description;
         chanceTitle.text = communityChancesData[rndChance].Title;
+        ChancePanels.SetActive(true);
         UIManager.instance.UpdateMoney(communityChancesData[rndChance].money);
         // Implement logic for shield reward
         Debug.Log("Giving Chance reward!");
