@@ -114,8 +114,8 @@ public class UIManager : MonoBehaviour
     {
         if (PhotonNetwork.InLobby)
         {
-            //string roomName = "Room# " + Random.Range(1, 9999);
-            string roomName = "Room#";
+            string roomName = "Room# " + Random.Range(1, 9999);
+            //string roomName = "Room#";
             PhotonAuth.Instance.JoinOrCreateRoom(roomName, GlobalData.MaxPlayer);
         }
     }
