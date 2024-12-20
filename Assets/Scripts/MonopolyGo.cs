@@ -18,9 +18,15 @@ public class MonopolyGo : MonoBehaviour
 
     private int currentTileIndex = 0;
 
+    public PlayerClass playerClass;
+
+    public static MonopolyGo instance;
+
     void Start()
     {
-        //goButton.onClick.AddListener(OnGoButtonClicked);
+        if (!instance)
+            instance = this;
+        goButton.onClick.AddListener(OnGoButtonClicked);
     }
 
     void OnGoButtonClicked()
@@ -41,6 +47,7 @@ public class MonopolyGo : MonoBehaviour
         for (int i = 0; i < steps; i++)
         {
             currentTileIndex = (currentTileIndex + 1) % tiles.Length;
+            print("Tile To Jump: " + currentTileIndex);
             Vector3 targetPosition = tiles[currentTileIndex].position;
 
             // Move to the next tile with a jump
@@ -113,5 +120,13 @@ public class MonopolyGo : MonoBehaviour
         {
             UIManager.instance.UpdateMoney(tiles[tileIndex].GetComponent<TileInfo>().money);
         }
+    }
+
+    public enum PlayerClass
+    {
+        UpperClass,
+        MiddleClass,
+        WorkingClass,
+        LowerClass
     }
 }
