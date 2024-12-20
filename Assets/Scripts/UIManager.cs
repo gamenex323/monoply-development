@@ -8,19 +8,101 @@ using UnityEngine;
 public class UIManager : MonoBehaviour
 {
     public static UIManager instance;
-    public GameObject moneyPanel, bankHiestPanel, attackPanel, shieldPanel;
+    public GameObject moneyPanel, bankHiestPanel, attackPanel, shieldPanel, bottomPanel,PlayButton;
     public GameObject[] AllRewardPanels;
     public TextMeshProUGUI globalMoney;
     public TextMeshProUGUI moneyPanelText;
     public float durationOfMoneyEffect = 2f;
+    public GameObject[] selectionPanel;
+    public GameObject[] aiSelectionPanel;
+    public int gameSelection;
+    public int aiSelection;
     void Start()
     {
         instance = this;
         UpdateMoney(0);
         currentMaxPlayerIndex = GlobalData.MaxPlayer;
         UpdatePlayerData();
+        bottomPanel.SetActive(false);
+        PlayButton.SetActive(true);
     }
-    
+
+    public void GameSelectionRight()
+    {
+        gameSelection++;
+        if (gameSelection < selectionPanel.Length)
+        {
+            for (int i = 0; i < selectionPanel.Length; i++)
+            {
+                if (i == gameSelection)
+                {
+                    selectionPanel[i].SetActive(true);
+                }
+                else
+                {
+                    selectionPanel[i].SetActive(false);
+                }
+            }
+        }
+    }
+    public void GameSelectionLeft()
+    {
+        gameSelection--;
+        if(gameSelection >= 0)
+        {
+            print("Selection is: " + gameSelection);
+            for (int i = 0; i < selectionPanel.Length; i++)
+            {
+                if (i == gameSelection)
+                {
+                    selectionPanel[i].SetActive(true);
+                }
+                else
+                {
+                    selectionPanel[i].SetActive(false);
+                }
+            }
+        }
+    }
+
+    public void AISelectionRight()
+    {
+        aiSelection++;
+        if (aiSelection < aiSelectionPanel.Length)
+        {
+            print("AiSeclection: " + aiSelection);
+            for (int i = 0; i < aiSelectionPanel.Length; i++)
+            {
+                if (i == aiSelection)
+                {
+                    Debug.Log("Ai Selection panel", aiSelectionPanel[i]);
+                    aiSelectionPanel[i].SetActive(true);
+                }
+                else
+                {
+                    aiSelectionPanel[i].SetActive(false);
+                }
+            }
+        }
+    }
+    public void AISelectionLeft()
+    {
+        aiSelection--;
+        if (aiSelection >= 0)
+        {
+            for (int i = 0; i < aiSelectionPanel.Length; i++)
+            {
+                if (i == aiSelection)
+                {
+                    aiSelectionPanel[i].SetActive(true);
+                }
+                else
+                {
+                    aiSelectionPanel[i].SetActive(false);
+                }
+            }
+        }
+    }
     public void DisableAllRewardedPanels()
     {
         foreach (GameObject panel in AllRewardPanels)
