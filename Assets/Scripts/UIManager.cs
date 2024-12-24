@@ -20,11 +20,12 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         instance = this;
-        UpdateMoney(0);
+        UpdateMoneyInMatch(0);
         currentMaxPlayerIndex = GlobalData.MaxPlayer;
         UpdatePlayerData();
         bottomPanel.SetActive(false);
         PlayButton.SetActive(true);
+       
     }
 
     public void GameSelectionRight()
@@ -115,14 +116,17 @@ public class UIManager : MonoBehaviour
     {
 
     }
-
-    public void UpdateMoney(int money)
+    public void UpdateMoneyGlobaly(int money)
     {
         int currentMoney = GlobalData.GetMoney();
         GlobalData.SetMoney(money);
         int targetMoney = GlobalData.GetMoney();
         print("Money Update Complete");
         StartCoroutine(TypewriterEffect(globalMoney, currentMoney, targetMoney, durationOfMoneyEffect));
+    }
+    public void UpdateMoneyInMatch(int money)
+    {
+        MonopolyGo.instance.AddCashToCurrentTurnPlayer(money);
     }
 
     private IEnumerator TypewriterEffect(TextMeshProUGUI textElement, float currentMoney, float targetMoney, float duration)

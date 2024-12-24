@@ -22,6 +22,7 @@ public class PlayfabLogin : MonoBehaviour
 
     public void Login()
     {
+        print("GueatLogin");
         if (GlobalData.NickName == "")
         {
             string name = "Guest " + Random.Range(1, 9999);

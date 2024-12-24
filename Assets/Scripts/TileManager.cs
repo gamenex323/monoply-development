@@ -136,9 +136,9 @@ public class TileManager : MonoBehaviour
         UIManager.instance.moneyPanelText.GetComponent<TextMeshProUGUI>().color = Color.green;
 
         UIManager.instance.moneyPanelText.text = currentTileInfo.money.ToString();
-        UIManager.instance.UpdateMoney(currentTileInfo.money);
+        UIManager.instance.UpdateMoneyInMatch(currentTileInfo.money);
         moneyText.text = currentTileInfo.money.ToString();
-        UIManager.instance.UpdateMoney(currentTileInfo.money);
+        UIManager.instance.UpdateMoneyInMatch(currentTileInfo.money);
         Debug.Log("Giving Go reward!");
 
         // Also one extra dice
@@ -149,9 +149,9 @@ public class TileManager : MonoBehaviour
         UIManager.instance.moneyPanelText.GetComponent<TextMeshProUGUI>().color = Color.green;
 
         UIManager.instance.moneyPanelText.text = currentTileInfo.money.ToString();
-        UIManager.instance.UpdateMoney(currentTileInfo.money);
+        UIManager.instance.UpdateMoneyInMatch(currentTileInfo.money);
         moneyText.text = currentTileInfo.money.ToString();
-        UIManager.instance.UpdateMoney(currentTileInfo.money);
+        UIManager.instance.UpdateMoneyInMatch(currentTileInfo.money);
         UIManager.instance.moneyPanel.gameObject.SetActive(true);
         Debug.Log("Giving money reward!");
 
@@ -189,7 +189,7 @@ public class TileManager : MonoBehaviour
         communityResourceDesciption.text = communityResourcesData[rndChance].Description;
         communityResourceTitle.text = communityResourcesData[rndChance].Title;
         communityResourcesPanel.SetActive(true);
-        UIManager.instance.UpdateMoney(communityResourcesData[rndChance].money);
+        UIManager.instance.UpdateMoneyInMatch(communityResourcesData[rndChance].money);
         // Implement logic for shield reward
         Debug.Log("Giving Community Resource Reward!");
     }
@@ -200,14 +200,14 @@ public class TileManager : MonoBehaviour
         chanceDescription.text = communityChancesData[rndChance].Description;
         chanceTitle.text = communityChancesData[rndChance].Title;
         ChancePanels.SetActive(true);
-        UIManager.instance.UpdateMoney(communityChancesData[rndChance].money);
+        UIManager.instance.UpdateMoneyInMatch(communityChancesData[rndChance].money);
         // Implement logic for shield reward
         Debug.Log("Giving Chance reward!");
     }
 
     private void DecreaseMoney()
     {
-        UIManager.instance.UpdateMoney(currentTileInfo.money);
+        UIManager.instance.UpdateMoneyInMatch(currentTileInfo.money);
         UIManager.instance.moneyPanelText.text = currentTileInfo.money.ToString();
         UIManager.instance.moneyPanelText.GetComponent<TextMeshProUGUI>().color = Color.red;
         UIManager.instance.moneyPanel.SetActive(true);
@@ -217,7 +217,7 @@ public class TileManager : MonoBehaviour
 
     private void Parking()
     {
-        UIManager.instance.UpdateMoney(currentTileInfo.money);
+        UIManager.instance.UpdateMoneyInMatch(currentTileInfo.money);
         UIManager.instance.moneyPanelText.text = currentTileInfo.money.ToString();
         UIManager.instance.moneyPanelText.GetComponent<TextMeshProUGUI>().color = Color.red;
         UIManager.instance.moneyPanel.SetActive(true);
@@ -260,7 +260,7 @@ public class TileManager : MonoBehaviour
 
     public void PayJailFine()
     {
-        UIManager.instance.UpdateMoney(-fineToRelease);
+        UIManager.instance.UpdateMoneyInMatch(-fineToRelease);
         JaiLPanel.SetActive(false);
         print("ReleaseFromJail");
 

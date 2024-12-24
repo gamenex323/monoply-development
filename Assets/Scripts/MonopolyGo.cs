@@ -221,7 +221,7 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
         Debug.Log($"Passed tile: {tileIndex}");
         if (tiles[tileIndex].GetComponent<TileInfo>().tileName == GlobalData.TileName.Go)
         {
-            UIManager.instance.UpdateMoney(tiles[tileIndex].GetComponent<TileInfo>().money);
+            UIManager.instance.UpdateMoneyInMatch(tiles[tileIndex].GetComponent<TileInfo>().money);
         }
     }
 
@@ -343,6 +343,7 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("CurrentTurn", out object currentTurnObj))
         {
+            print("Current Object: " + currentTurnObj);
             int currentTurnPlayerId = (int)currentTurnObj + 1; // ActorNumber is 1-based
             UpdatePlayerCash(currentTurnPlayerId, cashAmount);
             Debug.Log($"Added {cashAmount} cash to Player {currentTurnPlayerId}");
