@@ -173,50 +173,41 @@ namespace NiobiumStudios
 
         private void GiveReward(int key)
         {
-            //switch (key)
-            //{
-            //    case 0:
-            //        GlobalData.Cash += 1000;
-            //        InstanceManager.instance.uIManager.CashText.text = GlobalData.Cash.ToString();
-            //        GlobalEvents.OnUpdateCurrencyText += InstanceManager.instance.uIManager.LoadCurrencyTexts;
-            //        break;
+            switch (key)
+            {
+                case 0:
+                    UIManager.instance.UpdateMoneyGlobaly(1000);
+                    break;
 
-            //    case 1:
-            //        GlobalData.Cash += 2000;
-            //        InstanceManager.instance.uIManager.CashText.text = GlobalData.Cash.ToString();
-            //        GlobalEvents.OnUpdateCurrencyText += InstanceManager.instance.uIManager.LoadCurrencyTexts;
-            //        break;
-            //    case 2:
-            //        GlobalData.Cash += 3000;
-            //        InstanceManager.instance.uIManager.CashText.text = GlobalData.Cash.ToString();
-            //        GlobalEvents.OnUpdateCurrencyText += InstanceManager.instance.uIManager.LoadCurrencyTexts;
-            //        break;
-            //    case 3:
-            //        GlobalData.IAPSkates += 5;
-            //        InstanceManager.instance.uIManager.iAPskatesRewardNoText.text = GlobalData.IAPSkates.ToString();
-            //        InstanceManager.instance.uIManager.iAPFreeSkatesButton.SetActive(true);
-            //        break;
-            //    case 4:
-            //        GlobalData.IAPSpeedBoast += 5;
-            //        InstanceManager.instance.uIManager.iAPRiderRewardNoText.text = GlobalData.IAPSkates.ToString();
-            //        InstanceManager.instance.uIManager.iAPFreeRiderButton.SetActive(true);
-            //        break;
-            //    case 5:
-            //        GlobalData.IAPSkates += 10;
-            //        InstanceManager.instance.uIManager.iAPskatesRewardNoText.text = GlobalData.IAPSkates.ToString();
-            //        InstanceManager.instance.uIManager.iAPFreeSkatesButton.SetActive(true);
-            //        break;
-            //    case 6:
-            //        GlobalData.IAPSpeedBoast += 10;
-            //        InstanceManager.instance.uIManager.iAPRiderRewardNoText.text = GlobalData.IAPSkates.ToString();
-            //        InstanceManager.instance.uIManager.iAPFreeRiderButton.SetActive(true);
-            //        break;
-            //    case 7:
-            //        GlobalData.Cash += 5000;
-            //        InstanceManager.instance.uIManager.CashText.text = GlobalData.Cash.ToString();
-            //        GlobalEvents.OnUpdateCurrencyText += InstanceManager.instance.uIManager.LoadCurrencyTexts;
-            //        break;
-            //}
+                case 1:
+                    UIManager.instance.UpdateMoneyGlobaly(3000);
+
+                    break;
+                case 2:
+                    UIManager.instance.UpdateMoneyGlobaly(3000);
+
+                    break;
+                case 3:
+                    UIManager.instance.UpdateMoneyGlobaly(4000);
+
+                    break;
+                case 4:
+                    UIManager.instance.UpdateMoneyGlobaly(5000);
+
+                    break;
+                case 5:
+                    UIManager.instance.UpdateMoneyGlobaly(6000);
+
+                    break;
+                case 6:
+                    UIManager.instance.UpdateMoneyGlobaly(10000);
+
+                    break;
+                case 7:
+                    UIManager.instance.UpdateMoneyGlobaly(12000);
+
+                    break;
+            }
         }
         //Returns the lastReward playerPrefs key depending on instanceId
         private string GetLastRewardKey()
