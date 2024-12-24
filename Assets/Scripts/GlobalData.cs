@@ -72,6 +72,12 @@ public static class GlobalData
         set { PlayerPrefs.SetInt(_MaxPlayer, value); }
         get { return PlayerPrefs.GetInt(_MaxPlayer); }
     }
+    public enum Modes
+    {
+        AI,
+        Local,
+        Multiplayer
+    }
     #endregion
 
 }

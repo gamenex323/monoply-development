@@ -2,8 +2,11 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using Photon.Pun;
+using ExitGames.Client.Photon;
+using System.Collections.Generic;
 
-public class MonopolyGo : MonoBehaviour
+public class MonopolyGo : MonoBehaviourPunCallbacks
 {
     public GameObject playerIcon; // The icon that moves
     public Button goButton; // The button to start the move
@@ -12,72 +15,176 @@ public class MonopolyGo : MonoBehaviour
     public float jumpHeight = 1.0f; // Height of the jump
     public int jumpCount = 1; // Number of jumps to perform
 
-    public Transform dice1; // The Transform of the first dice
-    public Transform dice2; // The Transform of the second dice
+    public Transform dice1; // Transform of the first dice
+    public Transform dice2; // Transform of the second dice
     public float diceRollDuration = 1f; // Duration for the dice roll animation
 
-    private int currentTileIndex = 0;
+    private int currentTileIndex = 0; // Player's current tile index
+    private int currentTurn = 0; // Current player's turn
+    private int playerIndex; // Local player's index
+    private bool isMultiplayer; // Check if the game is multiplayer
 
-    public PlayerClass playerClass;
+    public PlayerClass playerClass; // Enum to track the player's class
+    public static MonopolyGo instance; // Singleton instance
 
-    public static MonopolyGo instance;
-
-    void Start()
+    void Awake()
     {
         if (!instance)
             instance = this;
+    }
+
+    public void Start()
+    {
+        isMultiplayer = PhotonNetwork.IsConnected;
+
+        if (isMultiplayer)
+        {
+
+
+            // Assign random player class
+            playerClass = (PlayerClass)Random.Range(0, System.Enum.GetValues(typeof(PlayerClass)).Length);
+            PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "PlayerClass", playerClass } });
+
+            if (PhotonNetwork.IsMasterClient)
+            {
+                photonView.RPC(nameof(OnClickLetStart), RpcTarget.All);
+                InitializePlayers();
+                // Initialize turn management
+                if (!PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("CurrentTurn"))
+                {
+                    PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "CurrentTurn", 0 } });
+                }
+            }
+
+            playerIndex = PhotonNetwork.LocalPlayer.ActorNumber - 1;
+        }
+        else
+        {
+            playerClass = PlayerClass.UpperClass; // Default for single-player
+            UIManager.instance.PlayerGameInfoScrollView.SetActive(false);
+        }
+
         goButton.onClick.AddListener(OnGoButtonClicked);
+        UpdateGoButtonState();
     }
 
     void OnGoButtonClicked()
     {
-        StartCoroutine(MovePlayer());
+        if (isMultiplayer)
+        {
+            photonView.RPC(nameof(MovePlayerRPC), RpcTarget.AllBuffered, PhotonNetwork.LocalPlayer.ActorNumber);
+        }
+        else
+        {
+            StartCoroutine(MovePlayer());
+        }
     }
 
     IEnumerator MovePlayer()
     {
-        // Roll the dice to get a random movement sum
-        int diceSum = RollDice();
+        int diceSum = RollDice(); // Roll the dice
+        yield return AnimateDiceRoll(diceSum); // Animate dice rolling
 
-        // Animate the dice rolling before moving
-        yield return AnimateDiceRoll(diceSum);
-
-        // Move the player based on the dice sum
-        int steps = diceSum; // Use the dice sum as the number of steps
-        for (int i = 0; i < steps; i++)
+        for (int i = 0; i < diceSum; i++)
         {
             currentTileIndex = (currentTileIndex + 1) % tiles.Length;
-            print("Tile To Jump: " + currentTileIndex);
-            Vector3 targetPosition = tiles[currentTileIndex].position;
+            UpdateTileIndex(currentTileIndex);
+            // Sync the new tile index and hat position across the network
+            // Sync the hat movement
+            //photonView.RPC(nameof(SyncHatPosition), RpcTarget.AllBuffered, tiles[currentTileIndex].position);
+            photonView.RPC(nameof(SyncMoveToPosition), RpcTarget.AllBuffered, tiles[currentTileIndex].position);
+            yield return MoveToPosition(tiles[currentTileIndex].position);
 
-            // Move to the next tile with a jump
-            yield return MoveToPosition(targetPosition);
-
-            // Check if this is the last step
-            if (i == steps - 1)
+            if (i == diceSum - 1)
             {
-                ActivateStepPanel(currentTileIndex); // Activate panel for the current tile
+                ActivateStepPanel(currentTileIndex); // Activate step panel
             }
             else
             {
-                CheckTilePrize(currentTileIndex); // Handle prize logic for passing tiles
+                CheckTilePrize(currentTileIndex); // Handle passing tile prizes
             }
+        }
+
+        if (isMultiplayer)
+        {
+            photonView.RPC(nameof(EndTurnRPC), RpcTarget.AllBuffered);
+        }
+    }
+    [PunRPC]
+    void SyncHatPosition(Vector3 newPosition)
+    {
+        // Move the hat to the new position on all clients
+        this.transform.position = newPosition;
+    }   
+    [PunRPC]
+    void MovePlayerRPC(int playerId)
+    {
+        if (PhotonNetwork.LocalPlayer.ActorNumber == playerId)
+        {
+            StartCoroutine(MovePlayer());
         }
     }
 
-    // Function to roll two dice
+    [PunRPC]
+    void EndTurnRPC()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            currentTurn = (int)PhotonNetwork.CurrentRoom.CustomProperties["CurrentTurn"];
+
+            AddCashToCurrentTurnPlayer(200);
+            currentTurn = (currentTurn + 1) % PhotonNetwork.CurrentRoom.PlayerCount;
+
+            PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "CurrentTurn", currentTurn } });
+        }
+    }
+
+    void UpdateGoButtonState()
+    {
+        if (isMultiplayer)
+        {
+            if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("CurrentTurn", out object turnObj))
+            {
+                int turn = (int)turnObj;
+                goButton.interactable = (PhotonNetwork.LocalPlayer.ActorNumber - 1 == turn);
+            }
+        }
+        else
+        {
+            goButton.interactable = true;
+        }
+    }
+    void UpdateTileIndex(int newTileIndex)
+    {
+        // Update the local currentTileIndex
+        currentTileIndex = newTileIndex;
+
+        // Update the room property
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "CurrentTileIndex", currentTileIndex } });
+    }
+    
+    public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
+    {
+        if (propertiesThatChanged.ContainsKey("CurrentTurn"))
+        {
+            UpdateGoButtonState();
+        }
+        if (propertiesThatChanged.ContainsKey("CurrentTileIndex"))
+        {
+            currentTileIndex = (int)propertiesThatChanged["CurrentTileIndex"];
+            // You may want to perform additional actions here, like moving the player icon
+        }
+    }
+
     int RollDice()
     {
-        // Roll two dice (each between 1 and 6) and return their sum
         int die1 = Random.Range(1, 7);
         int die2 = Random.Range(1, 7);
         return die1 + die2;
     }
 
-    // Function to animate the dice rolling
     IEnumerator AnimateDiceRoll(int targetSum)
     {
-        // Animate the dice rolling (rotating them)
         float timePassed = 0;
         while (timePassed < diceRollDuration)
         {
@@ -87,39 +194,49 @@ public class MonopolyGo : MonoBehaviour
             yield return null;
         }
 
-        // You can optionally log the dice sum or display it on the UI
-        Debug.Log("Dice Rolled: " + targetSum);
+        Debug.Log($"Dice Rolled: {targetSum}");
     }
-
-    // Function to move the player icon to a new position with a jump
+    
     IEnumerator MoveToPosition(Vector3 targetPosition)
     {
-        // Use DOTween's DOJump for the jump effect
         playerIcon.transform.DOJump(targetPosition, jumpHeight, jumpCount, moveDuration).SetEase(Ease.OutQuad);
         yield return new WaitForSeconds(moveDuration);
+       
     }
-
-    // Function to handle tile panel activation for rewards
+    [PunRPC]
+    void SyncMoveToPosition(Vector3 targetPosition)
+    {
+        // Ensure the animation runs with the same parameters across all clients
+        playerIcon.transform.DOJump(targetPosition, jumpHeight, jumpCount, moveDuration)
+            .SetEase(Ease.OutQuad); // The same animation as on the local client
+    }
     void ActivateStepPanel(int tileIndex)
     {
         TileManager.instance.GiveTileReward(tiles[tileIndex].GetComponent<TileInfo>());
-        Debug.Log("Landed on tile: " + tileIndex);
-        //Invoke(nameof(StepPanelDisable), 2f);
+        Debug.Log($"Landed on tile: {tileIndex}");
     }
 
-    void StepPanelDisable()
-    {
-        UIManager.instance.DisableAllRewardedPanels();
-    }
-
-    // Function to handle the prize logic when passing a tile
     void CheckTilePrize(int tileIndex)
     {
-        Debug.Log("Passed tile: " + tileIndex);
+        Debug.Log($"Passed tile: {tileIndex}");
         if (tiles[tileIndex].GetComponent<TileInfo>().tileName == GlobalData.TileName.Go)
         {
             UIManager.instance.UpdateMoney(tiles[tileIndex].GetComponent<TileInfo>().money);
         }
+    }
+
+    [PunRPC]
+    void OnClickLetStart()
+    {
+        UIManager.instance.RoomPanel.SetActive(false);
+        UIManager.instance.BottomPanel.SetActive(true);
+        UIManager.instance.PlayerGameInfoScrollView.SetActive(true);
+    }
+
+    public void OnStartGame()
+    {
+        OnClickLetStart();
+        //photonView.RPC(nameof(OnClickLetStart), RpcTarget.AllBuffered);
     }
 
     public enum PlayerClass
@@ -128,5 +245,141 @@ public class MonopolyGo : MonoBehaviour
         MiddleClass,
         WorkingClass,
         LowerClass
+    }
+
+    [System.Serializable]
+    public class PlayerData
+    {
+        public int playerId;
+        public string playerName;
+        public PlayerClass playerClass;
+        public int cash;
+
+        public PlayerData(int id, string name, PlayerClass pClass, int startingCash)
+        {
+            playerId = id;
+            playerName = name;
+            playerClass = pClass;
+            cash = startingCash;
+        }
+    }
+    public List<PlayerData> playerDataList = new List<PlayerData>(); // List to store all player data
+    [PunRPC]
+    public void InitializePlayers()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            playerDataList.Clear();
+
+            foreach (var player in PhotonNetwork.PlayerList)
+            {
+                string playerName = player.NickName;
+                PlayerClass playerClass = (PlayerClass)Random.Range(0, System.Enum.GetValues(typeof(PlayerClass)).Length);
+                int startingCash = GetStartingCash(playerClass);
+
+                PlayerData newPlayerData = new PlayerData(player.ActorNumber, playerName, playerClass, startingCash);
+                playerDataList.Add(newPlayerData);
+            }
+
+            SyncPlayerData();
+        }
+    }
+
+    int GetStartingCash(PlayerClass playerClass)
+    {
+        return playerClass switch
+        {
+            PlayerClass.UpperClass => 2500,
+            PlayerClass.MiddleClass => 1500,
+            PlayerClass.WorkingClass => 1000,
+            PlayerClass.LowerClass => 500,
+            _ => 0
+        };
+    }
+
+    void SyncPlayerData()
+    {
+        string serializedData = SerializePlayerData();
+        photonView.RPC(nameof(SyncPlayerDataRPC), RpcTarget.AllBuffered, serializedData);
+    }
+    [PunRPC]
+    void SyncPlayerDataRPC(string serializedData)
+    {
+        playerDataList = DeserializePlayerData(serializedData);
+        DisplayPlayerInfo();
+    }
+    string SerializePlayerData()
+    {
+        List<string> dataStrings = new List<string>();
+        foreach (var data in playerDataList)
+        {
+            string dataString = $"{data.playerId},{data.playerName},{(int)data.playerClass},{data.cash}";
+            dataStrings.Add(dataString);
+        }
+        return string.Join(";", dataStrings);
+    }
+    List<PlayerData> DeserializePlayerData(string serializedData)
+    {
+        List<PlayerData> dataList = new List<PlayerData>();
+        string[] dataEntries = serializedData.Split(';');
+
+        foreach (var entry in dataEntries)
+        {
+            string[] fields = entry.Split(',');
+            int id = int.Parse(fields[0]);
+            string name = fields[1];
+            PlayerClass pClass = (PlayerClass)int.Parse(fields[2]);
+            int cash = int.Parse(fields[3]);
+            dataList.Add(new PlayerData(id, name, pClass, cash));
+        }
+
+        return dataList;
+    }
+    public PlayerData GetPlayerData(int playerId)
+    {
+        return playerDataList.Find(p => p.playerId == playerId);
+    }
+    public void AddCashToCurrentTurnPlayer(int cashAmount)
+    {
+        if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("CurrentTurn", out object currentTurnObj))
+        {
+            int currentTurnPlayerId = (int)currentTurnObj + 1; // ActorNumber is 1-based
+            UpdatePlayerCash(currentTurnPlayerId, cashAmount);
+            Debug.Log($"Added {cashAmount} cash to Player {currentTurnPlayerId}");
+        }
+    }
+
+    public void UpdatePlayerCash(int playerId, int amount)
+    {
+        PlayerData player = GetPlayerData(playerId);
+        if (player != null)
+        {
+            player.cash += amount;
+            SyncPlayerData();
+        }
+    }
+
+    public void DisplayPlayerInfo()
+    {
+        ClearPlayerInfoList();
+        foreach (var player in playerDataList)
+        {
+            Debug.Log($"Player {player.playerId}: {player.playerClass}, Cash: {player.cash}");
+            GameObject init = Instantiate(UIManager.instance.PlayerGameInfoPrefab, UIManager.instance.PlayerGameInfoContent);
+            init.GetComponent<PlayerGameInfo>().PlayerID.text = player.playerId.ToString();
+            init.GetComponent<PlayerGameInfo>().PlayerName.text = player.playerName;
+            init.GetComponent<PlayerGameInfo>().PlayerClass.text = player.playerClass.ToString();
+            init.GetComponent<PlayerGameInfo>().PlayerCoins.text = player.cash.ToString();
+            playerInfoList.Add(init);
+        }
+    }
+    List<GameObject> playerInfoList = new List<GameObject>();
+    void ClearPlayerInfoList()
+    {
+        for (int i = 0; i < playerInfoList.Count; i++)
+        {
+            Destroy(playerInfoList[i]);
+        }
+        playerInfoList = new List<GameObject>();
     }
 }

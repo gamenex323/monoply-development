@@ -201,6 +201,8 @@ namespace Photon.Realtime
             }
         }
 
+        
+
         /// <summary>
         /// List of users who are expected to join this room. In matchmaking, Photon blocks a slot for each of these UserIDs out of the MaxPlayers.
         /// </summary>

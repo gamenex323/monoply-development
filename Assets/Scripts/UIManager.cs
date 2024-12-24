@@ -165,11 +165,17 @@ public class UIManager : MonoBehaviour
     [SerializeField] GameObject PlayerPrefab;
     [SerializeField] Transform PlayerContent;
     public TextMeshProUGUI MaxPlayerText;
+    [SerializeField] public GameObject RoomPanel;
+    [SerializeField] public GameObject BottomPanel;
+
+    [SerializeField] public GameObject PlayerGameInfoScrollView;
+    [SerializeField] public GameObject PlayerGameInfoPrefab;
+    [SerializeField] public Transform PlayerGameInfoContent;
     private void UpdatePlayerData()
     {
         if (PhotonNetwork.IsConnected)
             PlayerName.text = PhotonNetwork.LocalPlayer.NickName;
-        MaxPlayerText.text = GlobalData.MaxPlayer.ToString();
+        //MaxPlayerText.text = GlobalData.MaxPlayer.ToString();
     }
     int currentMaxPlayerIndex = 0;
     public void onNextChangeMaxPlayer()
@@ -179,7 +185,7 @@ public class UIManager : MonoBehaviour
         {
             currentMaxPlayerIndex = 0;
         }
-        MaxPlayerText.text = MaxPlayer[currentMaxPlayerIndex].ToString();
+        //MaxPlayerText.text = MaxPlayer[currentMaxPlayerIndex].ToString();
         GlobalData.MaxPlayer = currentMaxPlayerIndex;
     }
     public void OnPrevChangeMaxPlayer()
@@ -189,7 +195,7 @@ public class UIManager : MonoBehaviour
         {
             currentMaxPlayerIndex = MaxPlayer.Length - 1;
         }
-        MaxPlayerText.text = MaxPlayer[currentMaxPlayerIndex].ToString();
+        //MaxPlayerText.text = MaxPlayer[currentMaxPlayerIndex].ToString();
         GlobalData.MaxPlayer = currentMaxPlayerIndex;
     }
     public void OnClickOnCreateRoom()
@@ -199,6 +205,8 @@ public class UIManager : MonoBehaviour
             string roomName = "Room# " + Random.Range(1, 9999);
             //string roomName = "Room#";
             //PhotonAuth.Instance.JoinOrCreateRoom(roomName, GlobalData.MaxPlayer);
+            UIManager.instance.PlayerListPanel.SetActive(true);
+            UIManager.instance.CreateRoomPanel.SetActive(false);
             PhotonAuth.Instance.JoinOrCreateRoom();
         }
     }
@@ -206,8 +214,6 @@ public class UIManager : MonoBehaviour
     public void RoomPlayerList()
     {
         ClearPlayerList();
-        PlayerListPanel.SetActive(true);
-        CreateRoomPanel.SetActive(false);
         RoomNameText.text = PhotonNetwork.CurrentRoom.Name;
         Player[] players = PhotonNetwork.PlayerList;
         for (int i = 0; i < players.Length; i++)

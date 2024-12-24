@@ -39,6 +39,19 @@ MonoBehaviour:
   - DestroySpaceship
   - Fire
   - RespawnSpaceship
+  - OnGoButtonClicked
+  - EndTurnRPC
+  - MovePlayerRPC
+  - OnStartGame
+  - OnClickLetStart
+  - EndTurn
+  - SyncTileIndex
+  - SyncHatPosition
+  - MobePositionRPC
+  - MoveToPosition
+  - SyncMoveToPosition
+  - InitializePlayers
+  - SyncPlayerDataRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

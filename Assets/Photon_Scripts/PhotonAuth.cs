@@ -140,7 +140,7 @@ public class PhotonAuth : MonoBehaviourPunCallbacks
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
         Debug.Log("Room List Update");
-        UIManager.instance.RoomPlayerList();
+        //UIManager.instance.RoomPlayerList();
 
         foreach (var room in roomList)
         {
@@ -163,7 +163,7 @@ public class PhotonAuth : MonoBehaviourPunCallbacks
         // Create a new room with some basic options
         RoomOptions roomOptions = new RoomOptions
         {
-            MaxPlayers = UIManager.instance.MaxPlayer[GlobalData.MaxPlayer], // Maximum players in the room
+            MaxPlayers = 4, //nager.instance.MaxPlayer[GlobalData.MaxPlayer], // Maximum players in the room
             IsVisible = true, // Make the room visible in the room list
             IsOpen = true // Allow others to join
         };
@@ -176,4 +176,6 @@ public class PhotonAuth : MonoBehaviourPunCallbacks
     {
         Debug.Log("Successfully created a new room!");
     }
+   
+
 }
