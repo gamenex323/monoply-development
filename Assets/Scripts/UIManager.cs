@@ -8,10 +8,11 @@ using UnityEngine;
 public class UIManager : MonoBehaviourPunCallbacks
 {
     public static UIManager instance;
-    public GameObject moneyPanel, bankHiestPanel, attackPanel, shieldPanel, bottomPanel,PlayButton;
+    public GameObject moneyPanel, bankHiestPanel, attackPanel, shieldPanel, bottomPanel,PlayButton, winnerPanel;
     public GameObject[] AllRewardPanels;
     public TextMeshProUGUI globalMoney;
     public TextMeshProUGUI moneyPanelText;
+    public TextMeshProUGUI winnerName;
     public float durationOfMoneyEffect = 2f;
     public GameObject[] selectionPanel;
     public GameObject[] aiSelectionPanel;
