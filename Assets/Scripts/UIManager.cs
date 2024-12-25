@@ -127,8 +127,11 @@ public class UIManager : MonoBehaviourPunCallbacks
     }
     public void UpdateMoneyInMatch(int money)
     {
-        if(MonopolyGo.instance)
-            MonopolyGo.instance.AddCashToCurrentTurnPlayer(money);
+        if (PhotonNetwork.IsMasterClient)
+        {
+            if (MonopolyGo.instance)
+                MonopolyGo.instance.AddCashToCurrentTurnPlayer(money);
+        }
     }
 
     private IEnumerator TypewriterEffect(TextMeshProUGUI textElement, float currentMoney, float targetMoney, float duration)

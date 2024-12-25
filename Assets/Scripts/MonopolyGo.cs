@@ -5,6 +5,7 @@ using DG.Tweening;
 using Photon.Pun;
 using ExitGames.Client.Photon;
 using System.Collections.Generic;
+using System.Reflection;
 
 public class MonopolyGo : MonoBehaviourPunCallbacks
 {
@@ -22,7 +23,7 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
     private int currentTileIndex = 0; // Player's current tile index
     private int currentTurn = 0; // Current player's turn
     private int playerIndex; // Local player's index
-    private bool isMultiplayer; // Check if the game is multiplayer
+    public bool isMultiplayer; // Check if the game is multiplayer
 
     public PlayerClass playerClass; // Enum to track the player's class
     public static MonopolyGo instance; // Singleton instance
@@ -104,6 +105,11 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
             }
         }
 
+
+    }
+
+    public void EndTurn()
+    {
         if (isMultiplayer)
         {
             photonView.RPC(nameof(EndTurnRPC), RpcTarget.AllBuffered);
@@ -456,14 +462,14 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
 
         // Add the winner's in-game cash to their main cash
         AddToMainCash(winner.playerId, winner.cash);
-        UIManager.instance.winnerName.text = winner.playerName;
+
         // Notify all players
         DG.Tweening.DOVirtual.DelayedCall(5, ()=> photonView.RPC(nameof(NotifyWinnerRPC), RpcTarget.AllBuffered, winner.playerName));
     }
 
     void AddToMainCash(int playerId, int cashAmount)
     {
-        UIManager.instance.winnerPanel.SetActive(true);
+        
         // Add logic to store the cash in the player's main account (e.g., persistent storage or a database)
         Debug.Log($"Added {cashAmount} to Player {playerId}'s main cash.");
     }
@@ -472,7 +478,9 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
     void NotifyWinnerRPC(string winnerName)
     {
         //UIManager.instance.ShowWinnerPanel(winnerName); // Assume you have a UIManager method for this
-        
+
+        UIManager.instance.winnerPanel.SetActive(true);
+        DG.Tweening.DOVirtual.DelayedCall(10, () => PhotonNetwork.LeaveRoom());
         PhotonNetwork.LeaveRoom(); // Optionally leave the room after the game ends
     }
 

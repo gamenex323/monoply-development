@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -94,10 +95,13 @@ public class TileManager : MonoBehaviour
         {
             case GlobalData.TileName.Money:
                 GiveMoneyReward();
+                MonopolyGo.instance.EndTurn();
                 break;
 
             case GlobalData.TileName.Attack:
                 GiveAttackReward();
+                MonopolyGo.instance.EndTurn();
+
                 break;
             case GlobalData.TileName.BankHiest:
                 GiveBankHeistReward();
@@ -105,24 +109,34 @@ public class TileManager : MonoBehaviour
 
             case GlobalData.TileName.Shield:
                 GiveShieldReward();
+                MonopolyGo.instance.EndTurn();
+
                 break;
             case GlobalData.TileName.CommunityChest:
                 GiveCommunityChest();
+                MonopolyGo.instance.EndTurn();
+
                 break;
             case GlobalData.TileName.DecreaseMoney:
                 DecreaseMoney();
+                MonopolyGo.instance.EndTurn();
+
                 break;
             case GlobalData.TileName.Chance:
                 GiveChance();
                 break;
             case GlobalData.TileName.Parking:
                 Parking();
+                MonopolyGo.instance.EndTurn();
+
                 break;
             case GlobalData.TileName.GoToJail:
                 GoToJail();
                 break;
             case GlobalData.TileName.Go:
                 GiveMoneyReward();
+                MonopolyGo.instance.EndTurn();
+
                 break;
 
             default:
@@ -260,6 +274,7 @@ public class TileManager : MonoBehaviour
 
     public void PayJailFine()
     {
+        MonopolyGo.instance.EndTurn();
         UIManager.instance.UpdateMoneyInMatch(-fineToRelease);
         JaiLPanel.SetActive(false);
         print("ReleaseFromJail");
@@ -267,6 +282,7 @@ public class TileManager : MonoBehaviour
     }
     public void RollDiceToRelease()
     {
+        MonopolyGo.instance.EndTurn();
         int rollDiceNumber = 0;
         diceNumBox.SetActive(true);
         if (MonopolyGo.instance.playerClass == MonopolyGo.PlayerClass.UpperClass || MonopolyGo.instance.playerClass == MonopolyGo.PlayerClass.LowerClass)
@@ -274,6 +290,8 @@ public class TileManager : MonoBehaviour
             rollDiceNumber = Random.RandomRange(0, 7);
             if (rollDiceNumber % 2 == 0)
             {
+              
+
                 print("ReleaseFromJail");
                 JaiLPanel.SetActive(false);
                 diceToRelease = 0;
