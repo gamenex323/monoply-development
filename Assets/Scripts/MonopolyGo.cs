@@ -40,14 +40,13 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
         if (isMultiplayer)
         {
 
-
             // Assign random player class
             playerClass = (PlayerClass)Random.Range(0, System.Enum.GetValues(typeof(PlayerClass)).Length);
             PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "PlayerClass", playerClass } });
 
             if (PhotonNetwork.IsMasterClient)
             {
-                photonView.RPC(nameof(OnClickLetStart), RpcTarget.All);
+                //photonView.RPC(nameof(OnClickLetStart), RpcTarget.AllBuffered);
                 InitializePlayers();
                 // Initialize turn management
                 if (!PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("CurrentTurn"))
@@ -115,7 +114,12 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
     {
         // Move the hat to the new position on all clients
         this.transform.position = newPosition;
-    }   
+    }
+    IEnumerator StartGameWithDelay()
+    {
+        yield return new WaitForSeconds(1); // Allow time for all players to initialize
+        photonView.RPC(nameof(OnClickLetStart), RpcTarget.AllBuffered);
+    }
     [PunRPC]
     void MovePlayerRPC(int playerId)
     {
@@ -131,8 +135,8 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             currentTurn = (int)PhotonNetwork.CurrentRoom.CustomProperties["CurrentTurn"];
-
-            AddCashToCurrentTurnPlayer(200);
+            CheckForEliminations();
+            //AddCashToCurrentTurnPlayer(200);
             currentTurn = (currentTurn + 1) % PhotonNetwork.CurrentRoom.PlayerCount;
 
             PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "CurrentTurn", currentTurn } });
@@ -233,12 +237,12 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
         UIManager.instance.PlayerGameInfoScrollView.SetActive(true);
     }
 
-    public void OnStartGame()
-    {
-        OnClickLetStart();
-        //photonView.RPC(nameof(OnClickLetStart), RpcTarget.AllBuffered);
-    }
-
+    //public void OnStartGame()
+    //{
+    //    OnClickLetStart();
+    //    //photonView.RPC(nameof(OnClickLetStart), RpcTarget.AllBuffered);
+    //}
+    #region All Player Data
     public enum PlayerClass
     {
         UpperClass,
@@ -345,6 +349,7 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
         {
             print("Current Object: " + currentTurnObj);
             int currentTurnPlayerId = (int)currentTurnObj + 1; // ActorNumber is 1-based
+            cashAmount -= 500;
             UpdatePlayerCash(currentTurnPlayerId, cashAmount);
             Debug.Log($"Added {cashAmount} cash to Player {currentTurnPlayerId}");
         }
@@ -383,4 +388,92 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
         }
         playerInfoList = new List<GameObject>();
     }
+
+    #endregion
+
+    #region Eliminations
+    void EliminatePlayer(int playerId)
+    {
+        // Find the player to eliminate
+        PlayerData playerToEliminate = GetPlayerData(playerId);
+
+        if (playerToEliminate != null)
+        {
+            Debug.Log($"Player {playerToEliminate.playerName} is eliminated!");
+
+            // Remove the player from the list
+            playerDataList.Remove(playerToEliminate);
+
+            // Sync player data to all clients
+            SyncPlayerData();
+
+            // Check for victory condition
+            if (playerDataList.Count == 1)
+            {
+                DeclareWinner(playerDataList[0]);
+            }
+            else
+            {
+                // Update the turn order
+                UpdateTurnOrderAfterElimination(playerId);
+            }
+        }
+    }
+
+    void CheckForEliminations()
+    {
+        if (playerDataList.Count == 1)
+        {
+            DeclareWinner(playerDataList[0]);
+            return;
+        }
+        foreach (var player in new List<PlayerData>(playerDataList)) // Create a copy to iterate safely
+        {
+            if (player.cash <= 0)
+            {
+                EliminatePlayer(player.playerId);
+            }
+        }
+    }
+
+    void UpdateTurnOrderAfterElimination(int eliminatedPlayerId)
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            int currentTurn = (int)PhotonNetwork.CurrentRoom.CustomProperties["CurrentTurn"];
+
+            // Adjust the current turn if the eliminated player was the current turn
+            if (currentTurn == eliminatedPlayerId - 1)
+            {
+                currentTurn = (currentTurn + 1) % playerDataList.Count;
+                PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "CurrentTurn", currentTurn } });
+            }
+        }
+    }
+
+    void DeclareWinner(PlayerData winner)
+    {
+        Debug.Log($"Player {winner.playerName} wins the game!");
+
+        // Add the winner's in-game cash to their main cash
+        AddToMainCash(winner.playerId, winner.cash);
+
+        // Notify all players
+        DG.Tweening.DOVirtual.DelayedCall(10, ()=> photonView.RPC(nameof(NotifyWinnerRPC), RpcTarget.AllBuffered, winner.playerName));
+    }
+
+    void AddToMainCash(int playerId, int cashAmount)
+    {
+        // Add logic to store the cash in the player's main account (e.g., persistent storage or a database)
+        Debug.Log($"Added {cashAmount} to Player {playerId}'s main cash.");
+    }
+
+    [PunRPC]
+    void NotifyWinnerRPC(string winnerName)
+    {
+        //UIManager.instance.ShowWinnerPanel(winnerName); // Assume you have a UIManager method for this
+        PhotonNetwork.LeaveRoom(); // Optionally leave the room after the game ends
+    }
+
+    #endregion
 }

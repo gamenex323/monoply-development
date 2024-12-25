@@ -127,15 +127,26 @@ public class PhotonAuth : MonoBehaviourPunCallbacks
     {
         Debug.Log("Joined a room successfully.");
         Debug.Log("Current Room " +PhotonNetwork.CurrentRoom.Name);
-        UIManager.instance.RoomPlayerList();
+        if(UIManager.instance)
+            UIManager.instance.RoomPlayerList();
     }
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         UIManager.instance.RoomPlayerList();
+        if (PhotonNetwork.IsMasterClient)
+        {
+            if (MonopolyGo.instance)
+                MonopolyGo.instance.InitializePlayers();
+        }
     }
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         UIManager.instance.RoomPlayerList();
+        if (PhotonNetwork.IsMasterClient)
+        {
+            if(MonopolyGo.instance)
+                MonopolyGo.instance.InitializePlayers();
+        }
     }
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {

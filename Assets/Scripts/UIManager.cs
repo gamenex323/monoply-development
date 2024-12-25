@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class UIManager : MonoBehaviour
+public class UIManager : MonoBehaviourPunCallbacks
 {
     public static UIManager instance;
     public GameObject moneyPanel, bankHiestPanel, attackPanel, shieldPanel, bottomPanel,PlayButton;
@@ -126,7 +126,8 @@ public class UIManager : MonoBehaviour
     }
     public void UpdateMoneyInMatch(int money)
     {
-        MonopolyGo.instance.AddCashToCurrentTurnPlayer(money);
+        if(MonopolyGo.instance)
+            MonopolyGo.instance.AddCashToCurrentTurnPlayer(money);
     }
 
     private IEnumerator TypewriterEffect(TextMeshProUGUI textElement, float currentMoney, float targetMoney, float duration)
@@ -228,6 +229,14 @@ public class UIManager : MonoBehaviour
             playerList.Add(Init);
             //Debug.Log($"Player Name: {players[i].NickName}, Master Client: {players[i].IsMasterClient}");
         }
+        if (PhotonNetwork.IsMasterClient)
+        {
+            LetStart.SetActive(true);
+        }
+        else
+        {
+            LetStart.SetActive(false);
+        }
     }
     void ClearPlayerList()
     {
@@ -238,4 +247,20 @@ public class UIManager : MonoBehaviour
         playerList = new List<GameObject>();
     }
     #endregion
+    [SerializeField] GameObject Player;
+    [SerializeField] GameObject LetStart;
+    public void OnClickStart()
+    {
+        photonView.RPC(nameof(StartGame), RpcTarget.All);
+    }
+    [PunRPC]
+    void StartGame()
+    {
+        RoomPanel.SetActive(false);
+        BottomPanel.SetActive(true);
+        PlayerGameInfoScrollView.SetActive(true);
+        Player.SetActive(true);
+        PhotonNetwork.CurrentRoom.IsVisible = false;
+        PhotonNetwork.CurrentRoom.IsOpen = false;
+    }
 }
