@@ -112,6 +112,7 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
     {
         if (isMultiplayer)
         {
+            print("End Turn");
             photonView.RPC(nameof(EndTurnRPC), RpcTarget.AllBuffered);
         }
     }
@@ -469,8 +470,12 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
 
     void AddToMainCash(int playerId, int cashAmount)
     {
-        
+
         // Add logic to store the cash in the player's main account (e.g., persistent storage or a database)
+        if (PhotonNetwork.LocalPlayer.ActorNumber == playerId)
+        {
+            UIManager.instance.UpdateMoneyGlobaly(cashAmount);
+        }
         Debug.Log($"Added {cashAmount} to Player {playerId}'s main cash.");
     }
 
@@ -483,6 +488,8 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
         DG.Tweening.DOVirtual.DelayedCall(10, () => PhotonNetwork.LeaveRoom());
         PhotonNetwork.LeaveRoom(); // Optionally leave the room after the game ends
     }
+
+
 
     #endregion
 }

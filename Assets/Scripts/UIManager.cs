@@ -117,6 +117,10 @@ public class UIManager : MonoBehaviourPunCallbacks
     {
 
     }
+    public void GetLeaderBoard()
+    {
+        PlayfabLogin.login.GetLeaderboard();
+    }
     public void UpdateMoneyGlobaly(int money)
     {
         int currentMoney = GlobalData.GetMoney();
@@ -127,11 +131,8 @@ public class UIManager : MonoBehaviourPunCallbacks
     }
     public void UpdateMoneyInMatch(int money)
     {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            if (MonopolyGo.instance)
-                MonopolyGo.instance.AddCashToCurrentTurnPlayer(money);
-        }
+        if(MonopolyGo.instance)
+            MonopolyGo.instance.AddCashToCurrentTurnPlayer(money);
     }
 
     private IEnumerator TypewriterEffect(TextMeshProUGUI textElement, float currentMoney, float targetMoney, float duration)

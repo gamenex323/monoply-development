@@ -114,8 +114,6 @@ public class TileManager : MonoBehaviour
                 break;
             case GlobalData.TileName.CommunityChest:
                 GiveCommunityChest();
-                MonopolyGo.instance.EndTurn();
-
                 break;
             case GlobalData.TileName.DecreaseMoney:
                 DecreaseMoney();
@@ -140,6 +138,7 @@ public class TileManager : MonoBehaviour
                 break;
 
             default:
+                MonopolyGo.instance.EndTurn();
                 Debug.LogError("Unknown tile name: " + tileName);
                 break;
         }
@@ -165,8 +164,8 @@ public class TileManager : MonoBehaviour
         UIManager.instance.moneyPanelText.text = currentTileInfo.money.ToString();
         UIManager.instance.UpdateMoneyInMatch(currentTileInfo.money);
         moneyText.text = currentTileInfo.money.ToString();
-        UIManager.instance.UpdateMoneyInMatch(currentTileInfo.money);
         UIManager.instance.moneyPanel.gameObject.SetActive(true);
+
         Debug.Log("Giving money reward!");
 
     }
@@ -206,6 +205,8 @@ public class TileManager : MonoBehaviour
         UIManager.instance.UpdateMoneyInMatch(communityResourcesData[rndChance].money);
         // Implement logic for shield reward
         Debug.Log("Giving Community Resource Reward!");
+        DG.Tweening.DOVirtual.DelayedCall(5, () => MonopolyGo.instance.EndTurn());
+
     }
 
     private void GiveChance()
@@ -217,6 +218,8 @@ public class TileManager : MonoBehaviour
         UIManager.instance.UpdateMoneyInMatch(communityChancesData[rndChance].money);
         // Implement logic for shield reward
         Debug.Log("Giving Chance reward!");
+        DG.Tweening.DOVirtual.DelayedCall(5, () => MonopolyGo.instance.EndTurn());
+
     }
 
     private void DecreaseMoney()
@@ -329,6 +332,9 @@ public class TileManager : MonoBehaviour
         }
 
     }
+
+
+    
 
 
 
