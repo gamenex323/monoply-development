@@ -104,7 +104,7 @@ public class BankMetroGame : MonoBehaviour
     }
     public void CollectMoney()
     {
-        UIManager.instance.UpdateMoney(tempRewardOnWin);
+        UIManager.instance.UpdateMoneyInMatch(tempRewardOnWin);
         bankHiestComplete.SetActive(false);
     }
 

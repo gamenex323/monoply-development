@@ -73,6 +73,7 @@ namespace NiobiumStudios
                 dailyRewards.ClaimPrize();
                 readyToClaim = false;
                 UpdateUI();
+                Invoke(nameof(GameObjectDisable),1f);
             });
 
             buttonCloseReward.onClick.AddListener(() =>
@@ -163,6 +164,10 @@ namespace NiobiumStudios
         //        dailyRewardsUI.Add(dailyRewardUI);
         //    }
         //}
+        void GameObjectDisable()
+        {
+            gameObject.SetActive(false);
+        }
         private void InitializeDailyRewardsUI()
         {
             Transform contentTransform = dailyRewardsGroup.transform; // Assuming dailyRewardsGroup is the transform of your content GameObject

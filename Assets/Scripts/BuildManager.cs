@@ -25,6 +25,7 @@ public class BuildManager : MonoBehaviour
 
     void Start()
     {
+       
         Invoke(nameof(Init), 1f);
     }
 
@@ -52,16 +53,16 @@ public class BuildManager : MonoBehaviour
             if (playerMoney >= upgradeCost)
             {
                 // Deduct money and upgrade the building
-                UIManager.instance.UpdateMoney(-upgradeCost);
+                UIManager.instance.UpdateMoneyGlobaly(-upgradeCost);
 
                 // Change the building object for the new level
-                ChangeBuildingAppearance(building);
+                
 
                 // Upgrade the level
                 building.currentLevel++;
                 SaveBuildingData();
                 UpdateMoneyText();
-
+                ChangeBuildingAppearance(building);
                 // Update the button cost text and image after the upgrade
                 UpdateUpgradeButtonText(building);
                 UpdateBuildingImage(building);
@@ -102,7 +103,7 @@ public class BuildManager : MonoBehaviour
     {
         for (int i = 0; i < buildings.Length; i++)
         {
-            int savedLevel = PlayerPrefs.GetInt("Building_" + buildings[i].buildingName + "_Level", 0);
+            int savedLevel = PlayerPrefs.GetInt("Building_" + buildings[i].buildingName + "_Level");
             buildings[i].currentLevel = savedLevel;
 
             // Change the building appearance to match the saved level
@@ -132,10 +133,29 @@ public class BuildManager : MonoBehaviour
         }
 
         // Activate the building's current level
-        if (building.currentLevel < building.buildingLevels.Length)
+        for (int i = 0; i < building.buildingLevels.Length; i++)
         {
-            building.buildingLevels[building.currentLevel].SetActive(true);
+            if (building.currentLevel == building.maxLevel)
+            {
+                building.buildingLevels[building.buildingLevels.Length-1].SetActive(true);
+                return;
+            }
+            if (building.currentLevel == i)
+            {
+                if (building.currentLevel == 0)
+                    return;
+                if (building.currentLevel == 1)
+                {
+                    building.buildingLevels[0].SetActive(true);
+                }
+                else
+                {
+                    building.buildingLevels[i-1].SetActive(true);
+                }
+                
+            }
         }
+
     }
 
     // Update the upgrade button text to show the current upgrade cost
