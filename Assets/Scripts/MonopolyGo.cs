@@ -64,13 +64,13 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
             UIManager.instance.PlayerGameInfoScrollView.SetActive(false);
         }
 
-        goButton.onClick.AddListener(OnGoButtonClicked);
+        //goButton.onClick.AddListener(OnGoButtonClicked);
         UpdateGoButtonState();
     }
 
-    void OnGoButtonClicked()
+    public void OnGoButtonClicked()
     {
-        if (isMultiplayer)
+        if (isMultiplayer && !AiMatchFinding.instance.AiMatchIsPlaying)
         {
             photonView.RPC(nameof(MovePlayerRPC), RpcTarget.AllBuffered, PhotonNetwork.LocalPlayer.ActorNumber);
         }
@@ -78,6 +78,7 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
         {
             StartCoroutine(MovePlayer());
         }
+        goButton.interactable = false;
     }
 
     IEnumerator MovePlayer()
@@ -92,7 +93,8 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
             // Sync the new tile index and hat position across the network
             // Sync the hat movement
             //photonView.RPC(nameof(SyncHatPosition), RpcTarget.AllBuffered, tiles[currentTileIndex].position);
-            photonView.RPC(nameof(SyncMoveToPosition), RpcTarget.AllBuffered, tiles[currentTileIndex].position);
+            if(isMultiplayer && !AiMatchFinding.instance.AiMatchIsPlaying)
+                photonView.RPC(nameof(SyncMoveToPosition), RpcTarget.AllBuffered, tiles[currentTileIndex].position);
             yield return MoveToPosition(tiles[currentTileIndex].position);
 
             if (i == diceSum - 1)
@@ -110,10 +112,14 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
 
     public void EndTurn()
     {
-        if (isMultiplayer)
+        if (isMultiplayer && !AiMatchFinding.instance.AiMatchIsPlaying)
         {
             print("End Turn");
             photonView.RPC(nameof(EndTurnRPC), RpcTarget.AllBuffered);
+        }
+        else if (AiMatchFinding.instance.AiMatchIsPlaying)
+        {
+            AiMatchFinding.instance.TurnIncremented();
         }
     }
     [PunRPC]
@@ -152,7 +158,7 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
 
     void UpdateGoButtonState()
     {
-        if (isMultiplayer)
+        if (isMultiplayer && !AiMatchFinding.instance.AiMatchIsPlaying)
         {
             if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("CurrentTurn", out object turnObj))
             {
@@ -171,7 +177,11 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
         currentTileIndex = newTileIndex;
 
         // Update the room property
-        PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "CurrentTileIndex", currentTileIndex } });
+        if (isMultiplayer && !AiMatchFinding.instance.AiMatchIsPlaying)
+        {
+            PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "CurrentTileIndex", currentTileIndex } });
+
+        }
     }
     
     public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)

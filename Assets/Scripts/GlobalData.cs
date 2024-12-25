@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -57,6 +58,14 @@ public static class GlobalData
         return PlayerPrefs.GetInt(ShieldKey, 0);
     }
 
+    [Serializable]
+    public class PlayerClassData
+    {
+        public MonopolyGo.PlayerClass playerClass;
+        public int playerMoney;
+        public bool playerEliminated;
+        public string playerName;
+    }
     // Coroutine for typewriter effect
 
     #region Photon Data 
@@ -79,5 +88,7 @@ public static class GlobalData
         Multiplayer
     }
     #endregion
+
+
 
 }

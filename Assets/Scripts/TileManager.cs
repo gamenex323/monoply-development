@@ -180,7 +180,23 @@ public class TileManager : MonoBehaviour
 
     private void GiveBankHeistReward()
     {
-        UIManager.instance.bankHiestPanel.gameObject.SetActive(true);
+        if (AiMatchFinding.instance.AiMatchIsPlaying)
+        {
+            if (AiMatchFinding.instance.turnOfPlayer == 0)
+            {
+                UIManager.instance.bankHiestPanel.gameObject.SetActive(true);
+            }
+            else
+            {
+                AiMatchFinding.instance.UpdatePlayerProfile(Random.Range(300, 501));
+            }
+        }
+        else
+        {
+            UIManager.instance.bankHiestPanel.gameObject.SetActive(true);
+        }
+            
+       
 
         // Implement logic for bank heist reward
         Debug.Log("Giving bank heist reward!");
@@ -205,8 +221,26 @@ public class TileManager : MonoBehaviour
         UIManager.instance.UpdateMoneyInMatch(communityResourcesData[rndChance].money);
         // Implement logic for shield reward
         Debug.Log("Giving Community Resource Reward!");
-        DG.Tweening.DOVirtual.DelayedCall(5, () => MonopolyGo.instance.EndTurn());
+        if (AiMatchFinding.instance.AiMatchIsPlaying)
+        {
+            DG.Tweening.DOVirtual.DelayedCall(3, () => DisableComunityPanel());
+        }
+        else
+        {
+            DG.Tweening.DOVirtual.DelayedCall(5, () => MonopolyGo.instance.EndTurn());
+        }
 
+    }
+
+    void DisableComunityPanel()
+    {
+        MonopolyGo.instance.EndTurn();
+        communityResourcesPanel.SetActive(false);
+    }
+    void DisableChancesCardsPanel()
+    {
+        MonopolyGo.instance.EndTurn();
+        ChancePanels.SetActive(false);
     }
 
     private void GiveChance()
@@ -218,7 +252,14 @@ public class TileManager : MonoBehaviour
         UIManager.instance.UpdateMoneyInMatch(communityChancesData[rndChance].money);
         // Implement logic for shield reward
         Debug.Log("Giving Chance reward!");
-        DG.Tweening.DOVirtual.DelayedCall(5, () => MonopolyGo.instance.EndTurn());
+        if (AiMatchFinding.instance.AiMatchIsPlaying)
+        {
+            DG.Tweening.DOVirtual.DelayedCall(3, () => DisableChancesCardsPanel());
+        }
+        else
+        {
+            DG.Tweening.DOVirtual.DelayedCall(5, () => MonopolyGo.instance.EndTurn());
+        }
 
     }
 

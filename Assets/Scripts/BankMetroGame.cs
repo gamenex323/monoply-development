@@ -104,7 +104,7 @@ public class BankMetroGame : MonoBehaviour
     }
     public void CollectMoney()
     {
-        DG.Tweening.DOVirtual.DelayedCall(5, () => MonopolyGo.instance.EndTurn());
+        DG.Tweening.DOVirtual.DelayedCall(0.5f, () => MonopolyGo.instance.EndTurn());
 
         UIManager.instance.UpdateMoneyInMatch(tempRewardOnWin);
         bankHiestComplete.SetActive(false);

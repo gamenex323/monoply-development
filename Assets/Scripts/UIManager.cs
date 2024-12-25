@@ -131,8 +131,16 @@ public class UIManager : MonoBehaviourPunCallbacks
     }
     public void UpdateMoneyInMatch(int money)
     {
-        if(MonopolyGo.instance)
-            MonopolyGo.instance.AddCashToCurrentTurnPlayer(money);
+        if (MonopolyGo.instance.isMultiplayer && !AiMatchFinding.instance.AiMatchIsPlaying)
+        {
+            if (MonopolyGo.instance)
+                MonopolyGo.instance.AddCashToCurrentTurnPlayer(money);
+        }
+        else if (AiMatchFinding.instance.AiMatchIsPlaying){
+            AiMatchFinding.instance.UpdatePlayerProfile(money);
+        }
+
+
     }
 
     private IEnumerator TypewriterEffect(TextMeshProUGUI textElement, float currentMoney, float targetMoney, float duration)
