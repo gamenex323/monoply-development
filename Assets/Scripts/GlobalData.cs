@@ -67,10 +67,21 @@ public static class GlobalData
         public string playerName;
     }
     // Coroutine for typewriter effect
-
+    public static int Sound
+    {
+        set { PlayerPrefs.SetInt(_Sound, value); }
+        get { return PlayerPrefs.GetInt(_Sound); }
+    }
+    public static int Music
+    {
+        set { PlayerPrefs.SetInt(_Music, value); }
+        get { return PlayerPrefs.GetInt(_Music); }
+    }
     #region Photon Data 
     private static string _NickName = "NickName";
     private static string _MaxPlayer = "MaxPlayer";
+    private static string _Sound = "__Sound";
+    private static string _Music = "_Music";
     public static string NickName
     {
         set { PlayerPrefs.SetString(_NickName, value); }

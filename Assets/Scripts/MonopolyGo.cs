@@ -37,7 +37,10 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
     public void Start()
     {
         isMultiplayer = PhotonNetwork.IsConnected;
-
+        if (AiMatchFinding.instance.AiMatchIsPlaying)
+        {
+            isMultiplayer = false;
+        }
         if (isMultiplayer)
         {
 
@@ -64,13 +67,13 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
             UIManager.instance.PlayerGameInfoScrollView.SetActive(false);
         }
 
-        //goButton.onClick.AddListener(OnGoButtonClicked);
+        goButton.onClick.AddListener(OnGoButtonClicked);
         UpdateGoButtonState();
     }
 
     public void OnGoButtonClicked()
     {
-        if (isMultiplayer && !AiMatchFinding.instance.AiMatchIsPlaying)
+        if (isMultiplayer)
         {
             photonView.RPC(nameof(MovePlayerRPC), RpcTarget.AllBuffered, PhotonNetwork.LocalPlayer.ActorNumber);
         }
@@ -93,7 +96,7 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
             // Sync the new tile index and hat position across the network
             // Sync the hat movement
             //photonView.RPC(nameof(SyncHatPosition), RpcTarget.AllBuffered, tiles[currentTileIndex].position);
-            if(isMultiplayer && !AiMatchFinding.instance.AiMatchIsPlaying)
+            if(isMultiplayer)
                 photonView.RPC(nameof(SyncMoveToPosition), RpcTarget.AllBuffered, tiles[currentTileIndex].position);
             yield return MoveToPosition(tiles[currentTileIndex].position);
 
@@ -112,12 +115,12 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
 
     public void EndTurn()
     {
-        if (isMultiplayer && !AiMatchFinding.instance.AiMatchIsPlaying)
+        if (isMultiplayer)
         {
             print("End Turn");
             photonView.RPC(nameof(EndTurnRPC), RpcTarget.AllBuffered);
         }
-        else if (AiMatchFinding.instance.AiMatchIsPlaying)
+        else
         {
             AiMatchFinding.instance.TurnIncremented();
         }
@@ -158,7 +161,7 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
 
     void UpdateGoButtonState()
     {
-        if (isMultiplayer && !AiMatchFinding.instance.AiMatchIsPlaying)
+        if (isMultiplayer)
         {
             if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("CurrentTurn", out object turnObj))
             {
@@ -177,7 +180,7 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
         currentTileIndex = newTileIndex;
 
         // Update the room property
-        if (isMultiplayer && !AiMatchFinding.instance.AiMatchIsPlaying)
+        if (isMultiplayer)
         {
             PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "CurrentTileIndex", currentTileIndex } });
 

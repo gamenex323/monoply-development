@@ -131,14 +131,19 @@ public class UIManager : MonoBehaviourPunCallbacks
     }
     public void UpdateMoneyInMatch(int money)
     {
-        if (MonopolyGo.instance.isMultiplayer && !AiMatchFinding.instance.AiMatchIsPlaying)
+        //if (MonopolyGo.instance.isMultiplayer && !AiMatchFinding.instance.AiMatchIsPlaying)
+        //{
+        if (MonopolyGo.instance)
         {
-            if (MonopolyGo.instance)
+            if(MonopolyGo.instance.isMultiplayer)
                 MonopolyGo.instance.AddCashToCurrentTurnPlayer(money);
+            else
+                AiMatchFinding.instance.UpdatePlayerProfile(money);
         }
-        else if (AiMatchFinding.instance.AiMatchIsPlaying){
-            AiMatchFinding.instance.UpdatePlayerProfile(money);
-        }
+        //}
+        //else if (AiMatchFinding.instance.AiMatchIsPlaying){
+        //    AiMatchFinding.instance.UpdatePlayerProfile(money);
+        //}
 
 
     }
