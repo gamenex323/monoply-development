@@ -26,10 +26,32 @@ public class BankMetroGame : MonoBehaviour
     public int tempRewardOnWin;
     public TextMeshProUGUI winAmount;
     public GameObject bankHiestComplete;
-    private void Start()
+    private void OnEnable()
+    {
+        Enable();
+    }
+    private void Enable()
     {
 
-        instance = this;
+        if (!instance)
+        {
+            instance = this;
+        }
+        foreach (Image img in moneyRewardIcon)
+        {
+            img.color = Color.white;
+        }
+        foreach (Image img in gemRewardIcon)
+        {
+            img.color = Color.white;
+        }
+        foreach (Image img in crownRewardIcon)
+        {
+            img.color = Color.white;
+        }
+        moneyHiestCount = -1;
+        gemHiestCount = -1;
+        crownHiestCount = -1;
         SetSafesRandomly();
 
     }
@@ -40,6 +62,7 @@ public class BankMetroGame : MonoBehaviour
         {
 
             safe.SetReward(GetRandomRewardType());
+            safe.Hide();
         }
 
     }

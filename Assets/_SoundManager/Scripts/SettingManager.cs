@@ -16,11 +16,17 @@ public class SettingManager : MonoBehaviour
     [SerializeField] Button SoundOn;
     [SerializeField] Button SoundOff;
 
+    public static SettingManager instance;
+
     //[SerializeField] Button VibrationOn;
     //[SerializeField] Button VibrationOff;
 
     private void Start()
     {
+        if (!instance)
+        {
+            instance = this;
+        }
         LoadSettingInfo();
     }
     public void LoadSettingInfo()
@@ -122,6 +128,20 @@ public class SettingManager : MonoBehaviour
     {
         PlayClickSound();
         //Setting.SetActive(false);
+    }
+    public void OnUpgradeBuildingSound()
+    {
+        if (GlobalData.Sound == 1)
+        {
+            GameDevUtils.SoundSystem.SoundManager.Instance.Play("Upgrade");
+        }
+    }
+    public void CollectMoney()
+    {
+        if (GlobalData.Sound == 1)
+        {
+            GameDevUtils.SoundSystem.SoundManager.Instance.Play("CollectMoney");
+        }
     }
     #endregion
 }

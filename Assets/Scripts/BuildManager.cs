@@ -25,7 +25,7 @@ public class BuildManager : MonoBehaviour
 
     void Start()
     {
-       
+
         Invoke(nameof(Init), 1f);
     }
 
@@ -56,7 +56,7 @@ public class BuildManager : MonoBehaviour
                 UIManager.instance.UpdateMoneyGlobaly(-upgradeCost);
 
                 // Change the building object for the new level
-                
+
 
                 // Upgrade the level
                 building.currentLevel++;
@@ -66,6 +66,7 @@ public class BuildManager : MonoBehaviour
                 // Update the button cost text and image after the upgrade
                 UpdateUpgradeButtonText(building);
                 UpdateBuildingImage(building);
+                SettingManager.instance.OnUpgradeBuildingSound();
             }
             else
             {
@@ -137,7 +138,7 @@ public class BuildManager : MonoBehaviour
         {
             if (building.currentLevel == building.maxLevel)
             {
-                building.buildingLevels[building.buildingLevels.Length-1].SetActive(true);
+                building.buildingLevels[building.buildingLevels.Length - 1].SetActive(true);
                 return;
             }
             if (building.currentLevel == i)
@@ -150,9 +151,9 @@ public class BuildManager : MonoBehaviour
                 }
                 else
                 {
-                    building.buildingLevels[i-1].SetActive(true);
+                    building.buildingLevels[i - 1].SetActive(true);
                 }
-                
+
             }
         }
 

@@ -8,10 +8,11 @@ using UnityEngine;
 public class UIManager : MonoBehaviourPunCallbacks
 {
     public static UIManager instance;
-    public GameObject moneyPanel, bankHiestPanel, attackPanel, shieldPanel, bottomPanel,PlayButton, winnerPanel;
+    public GameObject moneyPanel, bankHiestPanel, attackPanel, shieldPanel, bottomPanel, PlayButton, winnerPanel, YouLoss, propertyPanel;
     public GameObject[] AllRewardPanels;
     public TextMeshProUGUI globalMoney;
     public TextMeshProUGUI moneyPanelText;
+    public TextMeshProUGUI propertyPanelText;
     public TextMeshProUGUI winnerName;
     public float durationOfMoneyEffect = 2f;
     public GameObject[] selectionPanel;
@@ -26,14 +27,15 @@ public class UIManager : MonoBehaviourPunCallbacks
         UpdatePlayerData();
         bottomPanel.SetActive(false);
         PlayButton.SetActive(true);
-       
+
     }
 
     public void GameSelectionRight()
     {
-        gameSelection++;
-        if (gameSelection < selectionPanel.Length)
+
+        if (gameSelection < selectionPanel.Length - 1)
         {
+            gameSelection++;
             for (int i = 0; i < selectionPanel.Length; i++)
             {
                 if (i == gameSelection)
@@ -49,9 +51,9 @@ public class UIManager : MonoBehaviourPunCallbacks
     }
     public void GameSelectionLeft()
     {
-        gameSelection--;
-        if(gameSelection >= 0)
+        if (gameSelection > 0)
         {
+            gameSelection--;
             print("Selection is: " + gameSelection);
             for (int i = 0; i < selectionPanel.Length; i++)
             {
@@ -69,9 +71,9 @@ public class UIManager : MonoBehaviourPunCallbacks
 
     public void AISelectionRight()
     {
-        aiSelection++;
-        if (aiSelection < aiSelectionPanel.Length)
+        if (aiSelection < aiSelectionPanel.Length - 1)
         {
+            aiSelection++;
             print("AiSeclection: " + aiSelection);
             for (int i = 0; i < aiSelectionPanel.Length; i++)
             {
@@ -89,9 +91,10 @@ public class UIManager : MonoBehaviourPunCallbacks
     }
     public void AISelectionLeft()
     {
-        aiSelection--;
-        if (aiSelection >= 0)
+
+        if (aiSelection > 0)
         {
+            aiSelection--;
             for (int i = 0; i < aiSelectionPanel.Length; i++)
             {
                 if (i == aiSelection)
@@ -135,7 +138,7 @@ public class UIManager : MonoBehaviourPunCallbacks
         //{
         if (MonopolyGo.instance)
         {
-            if(MonopolyGo.instance.isMultiplayer)
+            if (MonopolyGo.instance.isMultiplayer)
                 MonopolyGo.instance.AddCashToCurrentTurnPlayer(money);
             else
                 AiMatchFinding.instance.UpdatePlayerProfile(money);
@@ -204,7 +207,7 @@ public class UIManager : MonoBehaviourPunCallbacks
     public void onNextChangeMaxPlayer()
     {
         currentMaxPlayerIndex++;
-        if(currentMaxPlayerIndex >= MaxPlayer.Length)
+        if (currentMaxPlayerIndex >= MaxPlayer.Length)
         {
             currentMaxPlayerIndex = 0;
         }
@@ -214,7 +217,7 @@ public class UIManager : MonoBehaviourPunCallbacks
     public void OnPrevChangeMaxPlayer()
     {
         currentMaxPlayerIndex--;
-        if(currentMaxPlayerIndex < 0)
+        if (currentMaxPlayerIndex < 0)
         {
             currentMaxPlayerIndex = MaxPlayer.Length - 1;
         }

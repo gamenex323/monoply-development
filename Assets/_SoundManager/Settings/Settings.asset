@@ -21,7 +21,7 @@ MonoBehaviour:
   Sounds:
   - name: ButtonClick
     type: 1
-    audioClip: {fileID: 8300000, guid: 0137983599b36fb478bc4913315c871d, type: 3}
+    audioClip: {fileID: 8300000, guid: 944c4cb2e7468b54a94b9d43f43498e9, type: 3}
     audioClips: []
     loop: 0
     playRandomClip: 0
@@ -31,11 +31,31 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: BG
     type: 2
-    audioClip: {fileID: 8300000, guid: 2f433644f2a2d4e839bd2ef3d2a7b476, type: 3}
+    audioClip: {fileID: 8300000, guid: 79370a51b3ad4a24bbcf42aadf4bd668, type: 3}
     audioClips: []
     loop: 1
     playRandomClip: 0
     playOnAwake: 1
     m_volume: 0.08
+    m_pitch: 1
+    source: {fileID: 0}
+  - name: Upgrade
+    type: 0
+    audioClip: {fileID: 8300000, guid: 3219431564d595f4ab0912eaecc5cdaf, type: 3}
+    audioClips: []
+    loop: 0
+    playRandomClip: 0
+    playOnAwake: 0
+    m_volume: 1
+    m_pitch: 1
+    source: {fileID: 0}
+  - name: CollectMoney
+    type: 0
+    audioClip: {fileID: 8300000, guid: 2464f27f244f20f40bfa71dbe2b6089f, type: 3}
+    audioClips: []
+    loop: 0
+    playRandomClip: 0
+    playOnAwake: 0
+    m_volume: 1
     m_pitch: 1
     source: {fileID: 0}

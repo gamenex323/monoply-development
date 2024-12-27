@@ -26,6 +26,9 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
     public bool isMultiplayer; // Check if the game is multiplayer
 
     public PlayerClass playerClass; // Enum to track the player's class
+    public bool currentPlayerIsInJail = false;
+    public float diceRollToRelease = 0;
+
     public static MonopolyGo instance; // Singleton instance
 
     void Awake()
@@ -96,7 +99,7 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
             // Sync the new tile index and hat position across the network
             // Sync the hat movement
             //photonView.RPC(nameof(SyncHatPosition), RpcTarget.AllBuffered, tiles[currentTileIndex].position);
-            if(isMultiplayer)
+            if (isMultiplayer)
                 photonView.RPC(nameof(SyncMoveToPosition), RpcTarget.AllBuffered, tiles[currentTileIndex].position);
             yield return MoveToPosition(tiles[currentTileIndex].position);
 
@@ -186,7 +189,7 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
 
         }
     }
-    
+
     public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
     {
         if (propertiesThatChanged.ContainsKey("CurrentTurn"))
@@ -220,12 +223,12 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
 
         Debug.Log($"Dice Rolled: {targetSum}");
     }
-    
+
     IEnumerator MoveToPosition(Vector3 targetPosition)
     {
         playerIcon.transform.DOJump(targetPosition, jumpHeight, jumpCount, moveDuration).SetEase(Ease.OutQuad);
         yield return new WaitForSeconds(moveDuration);
-       
+
     }
     [PunRPC]
     void SyncMoveToPosition(Vector3 targetPosition)
@@ -237,12 +240,12 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
     void ActivateStepPanel(int tileIndex)
     {
         TileManager.instance.GiveTileReward(tiles[tileIndex].GetComponent<TileInfo>());
-        Debug.Log($"Landed on tile: {tileIndex}");
+        //Debug.Log($"Landed on tile: {tileIndex}");
     }
 
     void CheckTilePrize(int tileIndex)
     {
-        Debug.Log($"Passed tile: {tileIndex}");
+        //Debug.Log($"Passed tile: {tileIndex}");
         if (tiles[tileIndex].GetComponent<TileInfo>().tileName == GlobalData.TileName.Go)
         {
             UIManager.instance.UpdateMoneyInMatch(tiles[tileIndex].GetComponent<TileInfo>().money);
@@ -368,7 +371,7 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
         if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("CurrentTurn", out object currentTurnObj))
         {
             print("Current Object: " + currentTurnObj);
-            int currentTurnPlayerId = (int)currentTurnObj + 1; 
+            int currentTurnPlayerId = (int)currentTurnObj + 1;
             UpdatePlayerCash(currentTurnPlayerId, cashAmount);
             Debug.Log($"Added {cashAmount} cash to Player {currentTurnPlayerId}");
         }
@@ -478,7 +481,7 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
         AddToMainCash(winner.playerId, winner.cash);
 
         // Notify all players
-        DG.Tweening.DOVirtual.DelayedCall(5, ()=> photonView.RPC(nameof(NotifyWinnerRPC), RpcTarget.AllBuffered, winner.playerName));
+        DG.Tweening.DOVirtual.DelayedCall(5, () => photonView.RPC(nameof(NotifyWinnerRPC), RpcTarget.AllBuffered, winner.playerName));
     }
 
     void AddToMainCash(int playerId, int cashAmount)

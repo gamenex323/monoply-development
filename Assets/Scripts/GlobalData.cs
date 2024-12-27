@@ -19,7 +19,8 @@ public static class GlobalData
         Chance,
         Parking,
         Shutdown,
-        WaterSupply
+        WaterSupply,
+        Property
     }
 
     public static string MoneyKey = "PlayerMoney";

@@ -136,6 +136,11 @@ public class TileManager : MonoBehaviour
                 MonopolyGo.instance.EndTurn();
 
                 break;
+            case GlobalData.TileName.Property:
+                GivePropertyAction();
+                MonopolyGo.instance.EndTurn();
+
+                break;
 
             default:
                 MonopolyGo.instance.EndTurn();
@@ -169,6 +174,30 @@ public class TileManager : MonoBehaviour
         Debug.Log("Giving money reward!");
 
     }
+
+    private void GivePropertyAction()
+    {
+        // Implement logic to give money reward
+        if (currentTileInfo.money > 0)
+        {
+            UIManager.instance.propertyPanelText.GetComponent<TextMeshProUGUI>().color = Color.green;
+            UIManager.instance.propertyPanelText.text = "You Got " + currentTileInfo.money.ToString() + " From Landed Property";
+        }
+        else
+        {
+            UIManager.instance.propertyPanelText.GetComponent<TextMeshProUGUI>().color = Color.red;
+            UIManager.instance.propertyPanelText.text = "You Loss " + currentTileInfo.money.ToString() + " From Landed Property";
+
+        }
+
+
+
+        UIManager.instance.UpdateMoneyInMatch(currentTileInfo.money);
+        moneyText.text = currentTileInfo.money.ToString();
+        UIManager.instance.propertyPanel.gameObject.SetActive(true);
+        Debug.Log("Giving Property reward!");
+
+    }
     //
     private void GiveAttackReward()
     {
@@ -188,17 +217,17 @@ public class TileManager : MonoBehaviour
             }
             else
             {
-                AiMatchFinding.instance.UpdatePlayerProfile(Random.Range(300, 501));
+                GiveMoneyReward();
             }
         }
         else
         {
             UIManager.instance.bankHiestPanel.gameObject.SetActive(true);
         }
-            
-       
 
-        // Implement logic for bank heist reward
+
+
+
         Debug.Log("Giving bank heist reward!");
     }
 
@@ -281,7 +310,7 @@ public class TileManager : MonoBehaviour
         UIManager.instance.moneyPanel.SetActive(true);
     }
 
-    private void GoToJail()
+    public void GoToJail()
     {
         switch (MonopolyGo.instance.playerClass)
         {
@@ -293,6 +322,17 @@ public class TileManager : MonoBehaviour
                 JaiLPanel.SetActive(true);
                 break;
             case MonopolyGo.PlayerClass.MiddleClass:
+                if (AiMatchFinding.instance.AiMatchIsPlaying)
+                {
+                    if (AiMatchFinding.instance.turnOfPlayer == 0)
+                    {
+                        MonopolyGo.instance.currentPlayerIsInJail = true;
+                    }
+                }
+                else
+                {
+                    MonopolyGo.instance.currentPlayerIsInJail = true;
+                }
                 JailDescription.text = jailData[1].Description;
                 JailTitle.text = jailData[1].Title;
                 diceToRelease = jailData[1].diceToRelease;
@@ -300,6 +340,17 @@ public class TileManager : MonoBehaviour
                 JaiLPanel.SetActive(true);
                 break;
             case MonopolyGo.PlayerClass.WorkingClass:
+                if (AiMatchFinding.instance.AiMatchIsPlaying)
+                {
+                    if (AiMatchFinding.instance.turnOfPlayer == 0)
+                    {
+                        MonopolyGo.instance.currentPlayerIsInJail = true;
+                    }
+                }
+                else
+                {
+                    MonopolyGo.instance.currentPlayerIsInJail = true;
+                }
                 JailDescription.text = jailData[2].Description;
                 JailTitle.text = jailData[2].Title;
                 diceToRelease = jailData[2].diceToRelease;
@@ -307,6 +358,17 @@ public class TileManager : MonoBehaviour
                 JaiLPanel.SetActive(true);
                 break;
             case MonopolyGo.PlayerClass.LowerClass:
+                if (AiMatchFinding.instance.AiMatchIsPlaying)
+                {
+                    if (AiMatchFinding.instance.turnOfPlayer == 0)
+                    {
+                        MonopolyGo.instance.currentPlayerIsInJail = true;
+                    }
+                }
+                else
+                {
+                    MonopolyGo.instance.currentPlayerIsInJail = true;
+                }
                 JailDescription.text = jailData[3].Description;
                 JailTitle.text = jailData[3].Title;
                 diceToRelease = jailData[3].diceToRelease;
@@ -318,47 +380,117 @@ public class TileManager : MonoBehaviour
 
     public void PayJailFine()
     {
-        MonopolyGo.instance.EndTurn();
+        if (AiMatchFinding.instance.AiMatchIsPlaying)
+        {
+            if (AiMatchFinding.instance.turnOfPlayer == 0)
+            {
+                MonopolyGo.instance.currentPlayerIsInJail = false;
+            }
+        }
+        else
+        {
+            MonopolyGo.instance.currentPlayerIsInJail = false;
+        }
+
         UIManager.instance.UpdateMoneyInMatch(-fineToRelease);
         JaiLPanel.SetActive(false);
         print("ReleaseFromJail");
+        MonopolyGo.instance.EndTurn();
 
     }
     public void RollDiceToRelease()
     {
-        MonopolyGo.instance.EndTurn();
+
         int rollDiceNumber = 0;
-        diceNumBox.SetActive(true);
+
         if (MonopolyGo.instance.playerClass == MonopolyGo.PlayerClass.UpperClass || MonopolyGo.instance.playerClass == MonopolyGo.PlayerClass.LowerClass)
         {
             rollDiceNumber = Random.RandomRange(0, 7);
-            if (rollDiceNumber % 2 == 0)
+            diceNumBox.SetActive(true);
+            diceNumber.text = rollDiceNumber.ToString();
+            if (!MonopolyGo.instance.currentPlayerIsInJail)
             {
-              
 
-                print("ReleaseFromJail");
-                JaiLPanel.SetActive(false);
-                diceToRelease = 0;
-                Debug.Log(rollDiceNumber + " is even.");
+                if (rollDiceNumber % 2 == 0)
+                {
+
+                    if (AiMatchFinding.instance.AiMatchIsPlaying)
+                    {
+                        if (AiMatchFinding.instance.turnOfPlayer == 0)
+                        {
+                            MonopolyGo.instance.currentPlayerIsInJail = false;
+                        }
+                    }
+                    else
+                    {
+                        MonopolyGo.instance.currentPlayerIsInJail = false;
+                    }
+                    print("ReleaseFromJail");
+                    DG.Tweening.DOVirtual.DelayedCall(1.5f, () => JaiLPanel.SetActive(false));
+                    diceToRelease = 0;
+                    Debug.Log(rollDiceNumber + " is even.");
+                    MonopolyGo.instance.EndTurn();
+                    return;
+                }
+                else
+                {
+                    MonopolyGo.instance.diceRollToRelease = 2;
+                    DG.Tweening.DOVirtual.DelayedCall(1.5f, () => JaiLPanel.SetActive(false));
+                    if (AiMatchFinding.instance.AiMatchIsPlaying)
+                    {
+                        if (AiMatchFinding.instance.turnOfPlayer == 0)
+                        {
+                            MonopolyGo.instance.currentPlayerIsInJail = true;
+                        }
+                    }
+                    else
+                    {
+                        MonopolyGo.instance.currentPlayerIsInJail = true;
+                    }
+                    Debug.Log(rollDiceNumber + " is odd.");
+
+                }
+
             }
             else
             {
-                Debug.Log(rollDiceNumber + " is odd.");
+                MonopolyGo.instance.diceRollToRelease--;
+                if (diceToRelease <= 0)
+                {
+                    if (AiMatchFinding.instance.AiMatchIsPlaying)
+                    {
+                        if (AiMatchFinding.instance.turnOfPlayer == 0)
+                        {
+                            MonopolyGo.instance.currentPlayerIsInJail = false;
+                        }
+                    }
+                    else
+                        MonopolyGo.instance.currentPlayerIsInJail = false;
+
+                    print("ReleaseFromJail");
+
+
+                    //youAreFree.SetActive(true);
+                }
+                DG.Tweening.DOVirtual.DelayedCall(1.5f, () => JaiLPanel.SetActive(false));
             }
 
-            diceToRelease--;
-            if (diceToRelease <= 0)
-            {
-                print("ReleaseFromJail");
-                JaiLPanel.SetActive(false);
-                youAreFree.SetActive(false);
-            }
         }
         else
         {
             rollDiceNumber = Random.RandomRange(0, 7);
             if (rollDiceNumber % 2 == 0)
             {
+                if (AiMatchFinding.instance.AiMatchIsPlaying)
+                {
+                    if (AiMatchFinding.instance.turnOfPlayer == 0)
+                    {
+                        MonopolyGo.instance.currentPlayerIsInJail = false;
+                    }
+                }
+                else
+                    MonopolyGo.instance.currentPlayerIsInJail = false;
+
                 print("ReleaseFromJail");
                 JaiLPanel.SetActive(false);
                 youAreFree.SetActive(false);
@@ -369,13 +501,14 @@ public class TileManager : MonoBehaviour
             else
             {
                 Debug.Log(rollDiceNumber + " is odd.");
+                DG.Tweening.DOVirtual.DelayedCall(1.5f, () => JaiLPanel.SetActive(false));
             }
         }
-
+        MonopolyGo.instance.EndTurn();
     }
 
 
-    
+
 
 
 
