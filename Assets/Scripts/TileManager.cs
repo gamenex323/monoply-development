@@ -218,6 +218,7 @@ public class TileManager : MonoBehaviour
             else
             {
                 GiveMoneyReward();
+                MonopolyGo.instance.EndTurn();
             }
         }
         else
@@ -252,24 +253,43 @@ public class TileManager : MonoBehaviour
         Debug.Log("Giving Community Resource Reward!");
         if (AiMatchFinding.instance.AiMatchIsPlaying)
         {
-            DG.Tweening.DOVirtual.DelayedCall(3, () => DisableComunityPanel());
+            DG.Tweening.DOVirtual.DelayedCall(8, () => DisableComunityPanel());
         }
         else
         {
-            DG.Tweening.DOVirtual.DelayedCall(5, () => MonopolyGo.instance.EndTurn());
+            communityResourcesPanel.SetActive(false);
+            DG.Tweening.DOVirtual.DelayedCall(8, () => MonopolyGo.instance.EndTurn());
         }
 
     }
 
     void DisableComunityPanel()
     {
-        MonopolyGo.instance.EndTurn();
-        communityResourcesPanel.SetActive(false);
+        if (communityResourcesPanel.activeInHierarchy)
+        {
+            MonopolyGo.instance.EndTurn();
+            communityResourcesPanel.SetActive(false);
+        }
+    }
+
+    public void GotItButton()
+    {
+        if (AiMatchFinding.instance.AiMatchIsPlaying)
+        {
+            communityResourcesPanel.SetActive(false);
+            ChancePanels.SetActive(false);
+            MonopolyGo.instance.EndTurn();
+        }
+
     }
     void DisableChancesCardsPanel()
     {
-        MonopolyGo.instance.EndTurn();
-        ChancePanels.SetActive(false);
+        if (ChancePanels.activeInHierarchy)
+        {
+            MonopolyGo.instance.EndTurn();
+            ChancePanels.SetActive(false);
+            MonopolyGo.instance.EndTurn();
+        }
     }
 
     private void GiveChance()
@@ -283,13 +303,13 @@ public class TileManager : MonoBehaviour
         Debug.Log("Giving Chance reward!");
         if (AiMatchFinding.instance.AiMatchIsPlaying)
         {
-            DG.Tweening.DOVirtual.DelayedCall(3, () => DisableChancesCardsPanel());
+            DG.Tweening.DOVirtual.DelayedCall(8, () => DisableChancesCardsPanel());
         }
         else
         {
-            DG.Tweening.DOVirtual.DelayedCall(5, () => MonopolyGo.instance.EndTurn());
+            ChancePanels.SetActive(false);
+            DG.Tweening.DOVirtual.DelayedCall(8, () => MonopolyGo.instance.EndTurn());
         }
-
     }
 
     private void DecreaseMoney()

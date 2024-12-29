@@ -6,7 +6,7 @@ using Photon.Pun;
 using ExitGames.Client.Photon;
 using System.Collections.Generic;
 using System.Reflection;
-
+using DG.Tweening;
 public class MonopolyGo : MonoBehaviourPunCallbacks
 {
     public GameObject playerIcon; // The icon that moves
@@ -29,6 +29,9 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
     public bool currentPlayerIsInJail = false;
     public float diceRollToRelease = 0;
 
+    public GameObject dice;
+    int die1;
+    int die2;
     public static MonopolyGo instance; // Singleton instance
 
     void Awake()
@@ -89,8 +92,12 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
 
     IEnumerator MovePlayer()
     {
+        dice.SetActive(true);
+        yield return new WaitForSeconds(0.5f);
         int diceSum = RollDice(); // Roll the dice
-        yield return AnimateDiceRoll(diceSum); // Animate dice rolling
+        yield return new WaitForSeconds(1.3f); // Animate dice rolling
+        dice.SetActive(false);
+
 
         for (int i = 0; i < diceSum; i++)
         {
@@ -166,6 +173,7 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
     {
         if (isMultiplayer)
         {
+            print("Current Room: " + PhotonNetwork.CurrentRoom);
             if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("CurrentTurn", out object turnObj))
             {
                 int turn = (int)turnObj;
@@ -205,10 +213,76 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
 
     int RollDice()
     {
-        int die1 = Random.Range(1, 7);
-        int die2 = Random.Range(1, 7);
+        die1 = Random.Range(1, 7);
+        die2 = Random.Range(1, 7);
+        switch (die1)
+        {
+            case 1:
+                dice1.DOLocalRotate(new Vector3(0, 0, 180), 0.5f, RotateMode.Fast);
+                print("Case 1");
+                break;            
+            case 2:
+                dice1.DOLocalRotate(new Vector3(0, 0, 0), 0.5f, RotateMode.Fast);
+                print("Case 2");
+
+                break;            
+            case 3:
+                dice1.DOLocalRotate(new Vector3(0, 0, -90), 0.5f, RotateMode.Fast);
+                print("Case 3");
+
+                break;
+            case 5:
+                dice1.DOLocalRotate(new Vector3(0, 0, -270), 0.5f, RotateMode.Fast);
+                print("Case 5");
+
+                break;
+            case 4:
+                dice1.DOLocalRotate(new Vector3(90, 0, 0), 0.5f, RotateMode.Fast);
+                print("Case 4");
+
+                break;
+            case 6:
+                dice1.DOLocalRotate(new Vector3(270, 0, 0), 0.5f, RotateMode.Fast);
+                print("Case 6");
+
+                break;
+        }
+
+        switch (die2)
+        {
+            case 1:
+                dice2.DOLocalRotate(new Vector3(0, 0, 180), 0.5f, RotateMode.Fast);
+                print("Case 1");
+                break;
+            case 2:
+                dice2.DOLocalRotate(new Vector3(0, 0, 0), 0.5f, RotateMode.Fast);
+                print("Case 2");
+
+                break;
+            case 3:
+                dice2.DOLocalRotate(new Vector3(0, 0, -90), 0.5f, RotateMode.Fast);
+                print("Case 3");
+
+                break;
+            case 5:
+                dice2.DOLocalRotate(new Vector3(0, 0, -270), 0.5f, RotateMode.Fast);
+                print("Case 5");
+
+                break;
+            case 4:
+                dice2.DOLocalRotate(new Vector3(90, 0, 0), 0.5f, RotateMode.Fast);
+                print("Case 4");
+
+                break;
+            case 6:
+                dice2.DOLocalRotate(new Vector3(270, 0, 0), 0.5f, RotateMode.Fast);
+                print("Case 6");
+
+                break;
+        }
         return die1 + die2;
     }
+
 
     IEnumerator AnimateDiceRoll(int targetSum)
     {
