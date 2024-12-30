@@ -59,3 +59,13 @@ MonoBehaviour:
     m_volume: 1
     m_pitch: 1
     source: {fileID: 0}
+  - name: Dice
+    type: 0
+    audioClip: {fileID: 8300000, guid: 0e4cf0f2b9cbc04429b58c75d3a3d1f1, type: 3}
+    audioClips: []
+    loop: 0
+    playRandomClip: 0
+    playOnAwake: 0
+    m_volume: 1
+    m_pitch: 1
+    source: {fileID: 0}

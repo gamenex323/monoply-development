@@ -215,17 +215,18 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
     {
         die1 = Random.Range(1, 7);
         die2 = Random.Range(1, 7);
+        SettingManager.instance.DiceSound();
         switch (die1)
         {
             case 1:
                 dice1.DOLocalRotate(new Vector3(0, 0, 180), 0.5f, RotateMode.Fast);
                 print("Case 1");
-                break;            
+                break;
             case 2:
                 dice1.DOLocalRotate(new Vector3(0, 0, 0), 0.5f, RotateMode.Fast);
                 print("Case 2");
 
-                break;            
+                break;
             case 3:
                 dice1.DOLocalRotate(new Vector3(0, 0, -90), 0.5f, RotateMode.Fast);
                 print("Case 3");

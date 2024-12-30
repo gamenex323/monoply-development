@@ -143,5 +143,12 @@ public class SettingManager : MonoBehaviour
             GameDevUtils.SoundSystem.SoundManager.Instance.Play("CollectMoney");
         }
     }
+    public void DiceSound()
+    {
+        if (GlobalData.Sound == 1)
+        {
+            GameDevUtils.SoundSystem.SoundManager.Instance.Play("Dice");
+        }
+    }
     #endregion
 }
