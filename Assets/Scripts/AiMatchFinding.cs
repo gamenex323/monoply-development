@@ -42,21 +42,21 @@ public class AiMatchFinding : MonoBehaviour
     IEnumerator FindingClassRandomly()
     {
 
-        players[0].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = PlayerClass.UpperClass.ToString();
+        players[0].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = PlayerClass.HigherEarner.ToString();
 
         yield return new WaitForSeconds(1);
         players[0].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Your Initial Money: " + PlayerClassData[0].playerMoney;
-        players[1].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = PlayerClass.MiddleClass.ToString();
+        players[1].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = PlayerClass.MiddleEarner.ToString();
         playerTurnSequence[0] = PlayerClassData[0].playerClass;
 
         yield return new WaitForSeconds(1);
         players[1].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Your Initial Money: " + PlayerClassData[1].playerMoney;
-        players[2].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = PlayerClass.WorkingClass.ToString();
+        players[2].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = PlayerClass.EveryDayEarner.ToString();
         playerTurnSequence[1] = PlayerClassData[1].playerClass;
 
         yield return new WaitForSeconds(1);
         players[2].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Your Initial Money: " + PlayerClassData[2].playerMoney;
-        players[3].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = PlayerClass.LowerClass.ToString();
+        players[3].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = PlayerClass.EmergingEarner.ToString();
         playerTurnSequence[2] = PlayerClassData[2].playerClass;
 
         yield return new WaitForSeconds(1);

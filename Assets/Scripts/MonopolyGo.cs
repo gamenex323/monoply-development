@@ -69,7 +69,7 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
         }
         else
         {
-            playerClass = PlayerClass.UpperClass; // Default for single-player
+            playerClass = PlayerClass.HigherEarner; // Default for single-player
             UIManager.instance.PlayerGameInfoScrollView.SetActive(false);
         }
 
@@ -343,10 +343,10 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
     #region All Player Data
     public enum PlayerClass
     {
-        UpperClass,
-        MiddleClass,
-        WorkingClass,
-        LowerClass
+        HigherEarner,
+        MiddleEarner,
+        EveryDayEarner,
+        EmergingEarner
     }
 
     [System.Serializable]
@@ -391,10 +391,10 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
     {
         return playerClass switch
         {
-            PlayerClass.UpperClass => 2500,
-            PlayerClass.MiddleClass => 1500,
-            PlayerClass.WorkingClass => 1000,
-            PlayerClass.LowerClass => 500,
+            PlayerClass.HigherEarner => 2500,
+            PlayerClass.MiddleEarner => 1500,
+            PlayerClass.EveryDayEarner => 1000,
+            PlayerClass.EmergingEarner => 500,
             _ => 0
         };
     }

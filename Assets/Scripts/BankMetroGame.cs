@@ -26,6 +26,7 @@ public class BankMetroGame : MonoBehaviour
     public int tempRewardOnWin;
     public TextMeshProUGUI winAmount;
     public GameObject bankHiestComplete;
+    public GameObject initialPanel;
     private void OnEnable()
     {
         Enable();
@@ -53,6 +54,8 @@ public class BankMetroGame : MonoBehaviour
         gemHiestCount = -1;
         crownHiestCount = -1;
         SetSafesRandomly();
+
+        DG.Tweening.DOVirtual.DelayedCall(2f, () => initialPanel.SetActive(false));
 
     }
 

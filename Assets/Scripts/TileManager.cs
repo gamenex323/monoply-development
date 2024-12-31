@@ -334,14 +334,14 @@ public class TileManager : MonoBehaviour
     {
         switch (MonopolyGo.instance.playerClass)
         {
-            case MonopolyGo.PlayerClass.UpperClass:
+            case MonopolyGo.PlayerClass.HigherEarner:
                 JailDescription.text = jailData[0].Description;
                 JailTitle.text = jailData[0].Title;
                 diceToRelease = jailData[0].diceToRelease;
                 fineToRelease = jailData[0].fineToRelease;
                 JaiLPanel.SetActive(true);
                 break;
-            case MonopolyGo.PlayerClass.MiddleClass:
+            case MonopolyGo.PlayerClass.MiddleEarner:
                 if (AiMatchFinding.instance.AiMatchIsPlaying)
                 {
                     if (AiMatchFinding.instance.turnOfPlayer == 0)
@@ -359,7 +359,7 @@ public class TileManager : MonoBehaviour
                 fineToRelease = jailData[1].fineToRelease;
                 JaiLPanel.SetActive(true);
                 break;
-            case MonopolyGo.PlayerClass.WorkingClass:
+            case MonopolyGo.PlayerClass.EveryDayEarner:
                 if (AiMatchFinding.instance.AiMatchIsPlaying)
                 {
                     if (AiMatchFinding.instance.turnOfPlayer == 0)
@@ -377,7 +377,7 @@ public class TileManager : MonoBehaviour
                 fineToRelease = jailData[2].fineToRelease;
                 JaiLPanel.SetActive(true);
                 break;
-            case MonopolyGo.PlayerClass.LowerClass:
+            case MonopolyGo.PlayerClass.EmergingEarner:
                 if (AiMatchFinding.instance.AiMatchIsPlaying)
                 {
                     if (AiMatchFinding.instance.turnOfPlayer == 0)
@@ -423,7 +423,7 @@ public class TileManager : MonoBehaviour
 
         int rollDiceNumber = 0;
 
-        if (MonopolyGo.instance.playerClass == MonopolyGo.PlayerClass.UpperClass || MonopolyGo.instance.playerClass == MonopolyGo.PlayerClass.LowerClass)
+        if (MonopolyGo.instance.playerClass == MonopolyGo.PlayerClass.HigherEarner || MonopolyGo.instance.playerClass == MonopolyGo.PlayerClass.EmergingEarner)
         {
             rollDiceNumber = Random.RandomRange(0, 7);
             diceNumBox.SetActive(true);
