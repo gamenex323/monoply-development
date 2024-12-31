@@ -20,11 +20,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -63,11 +64,12 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
   cookieLightType: 0
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 1024
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -75,6 +77,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -87,6 +90,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -99,6 +103,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -111,6 +116,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -123,6 +129,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Windows Store Apps
+    maxTextureSize: 1024
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -643,33 +663,32 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Atlas 1_18: 357847434
-      Atlas 1_21: 114820205
-      Atlas 1_8: -106541312
-      Atlas 1_19: 1783646621
-      Atlas 1_9: 2103610811
-      Atlas 1_3: -659629084
       Atlas 1_0: -770833581
       Atlas 1_1: 196681574
-      Atlas 1_5: -1479903661
+      Atlas 1_10: 1271119670
       Atlas 1_11: 1292908293
+      Atlas 1_12: -810445698
+      Atlas 1_13: -1078957993
       Atlas 1_14: -362288496
+      Atlas 1_15: 1440017744
       Atlas 1_16: 1007006227
       Atlas 1_17: -1695767404
-      Atlas 1_4: -640068125
-      Atlas 1_20: -229526728
-      Atlas 1_10: 1271119670
+      Atlas 1_18: 357847434
+      Atlas 1_19: 1783646621
       Atlas 1_2: 2052000146
-      Atlas 1_6: 753808777
-      Atlas 1_12: -810445698
-      Atlas 1_23: 1590879958
-      Atlas 1_13: -1078957993
-      Atlas 1_15: 1440017744
-      Atlas 1_7: -1535388195
+      Atlas 1_20: -229526728
+      Atlas 1_21: 114820205
       Atlas 1_22: -1492391971
-  spritePackingTag: 
+      Atlas 1_23: 1590879958
+      Atlas 1_3: -659629084
+      Atlas 1_4: -640068125
+      Atlas 1_5: -1479903661
+      Atlas 1_6: 753808777
+      Atlas 1_7: -1535388195
+      Atlas 1_8: -106541312
+      Atlas 1_9: 2103610811
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 
