@@ -187,7 +187,7 @@ public class UIManager : MonoBehaviourPunCallbacks
     [SerializeField] TextMeshProUGUI PlayerName;
     [SerializeField] GameObject CreateRoomPanel;
     [SerializeField] GameObject PlayerListPanel;
-    [SerializeField] TextMeshProUGUI RoomNameText;
+    //[SerializeField] TextMeshProUGUI RoomNameText;
     [SerializeField] GameObject PlayerPrefab;
     [SerializeField] Transform PlayerContent;
     public TextMeshProUGUI MaxPlayerText;
@@ -240,7 +240,7 @@ public class UIManager : MonoBehaviourPunCallbacks
     public void RoomPlayerList()
     {
         ClearPlayerList();
-        RoomNameText.text = PhotonNetwork.CurrentRoom.Name;
+        //RoomNameText.text = PhotonNetwork.CurrentRoom.Name;
         Player[] players = PhotonNetwork.PlayerList;
         for (int i = 0; i < players.Length; i++)
         {
