@@ -46,10 +46,12 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
         if (AiMatchFinding.instance.AiMatchIsPlaying)
         {
             isMultiplayer = false;
+            UIManager.instance.LeaveButtonMultiplayer.SetActive(false);
+
         }
         if (isMultiplayer)
         {
-
+            UIManager.instance.LeaveButtonMultiplayer.SetActive(true);
             // Assign random player class
             playerClass = (PlayerClass)Random.Range(0, System.Enum.GetValues(typeof(PlayerClass)).Length);
             PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "PlayerClass", playerClass } });
@@ -166,6 +168,8 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
             currentTurn = (currentTurn + 1) % PhotonNetwork.CurrentRoom.PlayerCount;
 
             PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "CurrentTurn", currentTurn } });
+
+
         }
     }
 
@@ -178,6 +182,7 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
             {
                 int turn = (int)turnObj;
                 goButton.interactable = (PhotonNetwork.LocalPlayer.ActorNumber - 1 == turn);
+                SyncPlayerTurnVisual(turn);
             }
         }
         else
@@ -384,6 +389,7 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
             }
 
             SyncPlayerData();
+            DG.Tweening.DOVirtual.DelayedCall(1,()=> SyncPlayerTurnVisual(1));
         }
     }
 
@@ -461,7 +467,31 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
             SyncPlayerData();
         }
     }
-
+    
+    public void SyncPlayerTurnVisual(int playerID)
+    {
+        photonView.RPC(nameof(UpdatePlayerTurn), RpcTarget.AllBuffered, playerID);
+    }
+    [PunRPC]
+    public void UpdatePlayerTurn(int playerID)
+    {
+        ClearPlayerInfoList();
+        foreach (var player in playerDataList)
+        {
+            
+            Debug.Log($"Player {player.playerId}: {player.playerClass}, Cash: {player.cash}");
+            GameObject init = Instantiate(UIManager.instance.PlayerGameInfoPrefab, UIManager.instance.PlayerGameInfoContent);
+            if (player.playerId == playerID)
+            {
+                init.GetComponent<Image>().color = Color.green;
+            }
+            init.GetComponent<PlayerGameInfo>().PlayerID.text = player.playerId.ToString();
+            init.GetComponent<PlayerGameInfo>().PlayerName.text = player.playerName;
+            init.GetComponent<PlayerGameInfo>().PlayerClass.text = player.playerClass.ToString();
+            init.GetComponent<PlayerGameInfo>().PlayerCoins.text = player.cash.ToString();
+            playerInfoList.Add(init);
+        }
+    }
     public void DisplayPlayerInfo()
     {
         ClearPlayerInfoList();
@@ -577,7 +607,7 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
 
         UIManager.instance.winnerPanel.SetActive(true);
         DG.Tweening.DOVirtual.DelayedCall(10, () => PhotonNetwork.LeaveRoom());
-        PhotonNetwork.LeaveRoom(); // Optionally leave the room after the game ends
+        //PhotonNetwork.LeaveRoom(); // Optionally leave the room after the game ends
     }
 
 

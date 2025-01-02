@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviourPunCallbacks
 {
@@ -185,6 +186,7 @@ public class UIManager : MonoBehaviourPunCallbacks
     #region Developer 2
     public int[] MaxPlayer = { 2, 4 };
     [SerializeField] TextMeshProUGUI PlayerName;
+    [SerializeField] TextMeshProUGUI PlayerNameSetting;
     [SerializeField] GameObject CreateRoomPanel;
     [SerializeField] GameObject PlayerListPanel;
     //[SerializeField] TextMeshProUGUI RoomNameText;
@@ -200,7 +202,10 @@ public class UIManager : MonoBehaviourPunCallbacks
     private void UpdatePlayerData()
     {
         if (PhotonNetwork.IsConnected)
+        {
             PlayerName.text = PhotonNetwork.LocalPlayer.NickName;
+            PlayerNameSetting.text = PhotonNetwork.LocalPlayer.NickName;
+        }
         //MaxPlayerText.text = GlobalData.MaxPlayer.ToString();
     }
     int currentMaxPlayerIndex = 0;
@@ -270,6 +275,7 @@ public class UIManager : MonoBehaviourPunCallbacks
     #endregion
     [SerializeField] GameObject Player;
     [SerializeField] GameObject LetStart;
+    [SerializeField] public GameObject LeaveButtonMultiplayer;
     public void OnClickStart()
     {
         photonView.RPC(nameof(StartGame), RpcTarget.All);
@@ -283,5 +289,14 @@ public class UIManager : MonoBehaviourPunCallbacks
         Player.SetActive(true);
         PhotonNetwork.CurrentRoom.IsVisible = false;
         PhotonNetwork.CurrentRoom.IsOpen = false;
+    }
+
+    public void LeaveRoom()
+    {
+        PhotonNetwork.LeaveRoom();
+    }
+    public void LeaveAIGame()
+    {
+        SceneManager.LoadSceneAsync(1);
     }
 }

@@ -16,6 +16,8 @@ public class AiMatchFinding : MonoBehaviour
     public GameObject playButton;
     public PlayerClass[] playerTurnSequence;
     public GameObject[] playersProfiles;
+    public TextMeshProUGUI[] playersClass;
+    public TextMeshProUGUI[] playersMoney;
     public int turnOfPlayer = 0;
     public bool AiMatchIsPlaying;
     public GameObject upperPlayerProfiles;
@@ -131,8 +133,8 @@ public class AiMatchFinding : MonoBehaviour
                 print("Player " + i + " is Eliminated");
                 playersProfiles[i].GetComponent<Image>().color = Color.red;
             }
-            playersProfiles[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = PlayerClassData[i].playerMoney.ToString();
-            playersProfiles[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = PlayerClassData[i].playerClass.ToString();
+            playersMoney[i].text = PlayerClassData[i].playerMoney.ToString();
+            playersClass[i].text = PlayerClassData[i].playerClass.ToString();
         }
 
         if (eliminatedPlayers >= 3)
