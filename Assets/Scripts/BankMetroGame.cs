@@ -55,7 +55,7 @@ public class BankMetroGame : MonoBehaviour
         crownHiestCount = -1;
         SetSafesRandomly();
 
-        DG.Tweening.DOVirtual.DelayedCall(2f, () => initialPanel.SetActive(false));
+        DG.Tweening.DOVirtual.DelayedCall(5f, () => initialPanel.SetActive(false));
 
     }
 
