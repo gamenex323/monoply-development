@@ -127,6 +127,7 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
 
     public void EndTurn()
     {
+        Debug.Log("Turn Incremented");
         if (isMultiplayer)
         {
             print("End Turn");

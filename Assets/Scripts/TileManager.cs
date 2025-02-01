@@ -49,7 +49,18 @@ public class TileManager : MonoBehaviour
     public TextMeshProUGUI JailTitle;
     public TextMeshProUGUI JailDescription;
 
+
+
+
     public JailData[] jailData;
+
+
+    [Header("Property")]
+    public GameObject propertyPanel;
+    public TextMeshProUGUI propertyName;
+    public TextMeshProUGUI propertyRent;
+    public TextMeshProUGUI propertyPrice;
+    public TextMeshProUGUI propertyStaus;
     [System.Serializable]
     public class Chances
     {
@@ -137,8 +148,8 @@ public class TileManager : MonoBehaviour
 
                 break;
             case GlobalData.TileName.Property:
-                GivePropertyAction();
-                MonopolyGo.instance.EndTurn();
+                GiveProperty();
+               
 
                 break;
 
@@ -175,28 +186,98 @@ public class TileManager : MonoBehaviour
 
     }
 
-    private void GivePropertyAction()
+
+    public void BuyProperty()
+    {
+        int tempBuyPrice = 0;
+        if (currentTileInfo.money > 0)
+        {
+            tempBuyPrice = currentTileInfo.money;
+        }
+        else
+        {
+            tempBuyPrice = currentTileInfo.money * (-1);
+        }
+
+        UIManager.instance.UpdateMoneyInMatch(currentTileInfo.money);
+        currentTileInfo.propertyBuyByYou = true;
+        MonopolyGo.instance.EndTurn();
+        propertyStaus.text = "You Successfully Buy Property In " + tempBuyPrice;
+        DG.Tweening.DOVirtual.DelayedCall(2f,()=> propertyPanel.SetActive(false));
+
+    }
+    public void RentProperty()
+    {
+        
+        UIManager.instance.UpdateMoneyInMatch(-currentTileInfo.propertyRent);
+        MonopolyGo.instance.EndTurn();
+        propertyStaus.text = "You Rent Property In " + currentTileInfo.propertyRent;
+
+        DG.Tweening.DOVirtual.DelayedCall(2f, () => propertyPanel.SetActive(false));
+
+    }
+    private void GiveProperty()
     {
         // Implement logic to give money reward
+
+        if (AiMatchFinding.instance.AiMatchIsPlaying)
+        {
+            if (AiMatchFinding.instance.turnOfPlayer == 0)
+            {
+                if (currentTileInfo.propertyBuyByYou)
+                {
+                    MonopolyGo.instance.EndTurn();
+                }
+                else
+                {
+                    propertyStaus.text = "";
+                    propertyName.text = currentTileInfo.propertyName;
+                    propertyPrice.text = "BUY: " + currentTileInfo.money;
+                    propertyRent.text = "RENT: " + currentTileInfo.propertyRent;
+                    propertyPanel.gameObject.SetActive(true);
+                }
+
+            }
+            else
+            {
+                print("Turn Incremented From Here");
+                ProceedPropertyTileByGivenValues();
+            }
+
+        }
+        else
+        {
+            print("Turn Incremented From Here");
+
+            ProceedPropertyTileByGivenValues();
+        }
+
+
+
+
+
+
+    }
+
+    void ProceedPropertyTileByGivenValues()
+    {
         if (currentTileInfo.money > 0)
         {
             UIManager.instance.propertyPanelText.GetComponent<TextMeshProUGUI>().color = Color.green;
-            UIManager.instance.propertyPanelText.text = "You Got " + currentTileInfo.money.ToString() + " From Landed Property";
+            UIManager.instance.propertyPanelText.text = "You Got As Rent " + currentTileInfo.money.ToString() + " From Landed Property";
         }
         else
         {
             UIManager.instance.propertyPanelText.GetComponent<TextMeshProUGUI>().color = Color.red;
-            UIManager.instance.propertyPanelText.text = "You Loss " + currentTileInfo.money.ToString() + " From Landed Property";
+            UIManager.instance.propertyPanelText.text = "You Paid " + currentTileInfo.money.ToString() + " From Landed Property";
 
         }
-
-
-
         UIManager.instance.UpdateMoneyInMatch(currentTileInfo.money);
         moneyText.text = currentTileInfo.money.ToString();
         UIManager.instance.propertyPanel.gameObject.SetActive(true);
         Debug.Log("Giving Property reward!");
 
+        MonopolyGo.instance.EndTurn();
     }
     //
     private void GiveAttackReward()

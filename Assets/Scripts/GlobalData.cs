@@ -23,6 +23,16 @@ public static class GlobalData
         Property
     }
 
+    public enum PropertyColor
+    {
+        Red,
+        Purple,
+        LightBlue,
+        Maroon,
+        Orange
+
+    }
+
     public static string MoneyKey = "PlayerMoney";
     public static string ShieldKey = "PlayerShields";
     public static string CommmunityChest = "CommmunityChest";

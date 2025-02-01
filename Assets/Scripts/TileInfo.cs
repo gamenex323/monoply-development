@@ -6,8 +6,12 @@ public class TileInfo : MonoBehaviour
 {
     // Start is called before the first frame update
     public GlobalData.TileName tileName;
+    public GlobalData.PropertyColor propertyColor;
     public int money;
     public int shield;
+    public int propertyRent;
+    public string propertyName;
+    public bool propertyBuyByYou;
     void Start()
     {
 
