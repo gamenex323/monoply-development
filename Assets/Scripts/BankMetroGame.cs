@@ -27,13 +27,14 @@ public class BankMetroGame : MonoBehaviour
     public TextMeshProUGUI winAmount;
     public GameObject bankHiestComplete;
     public GameObject initialPanel;
+    public AudioSource safeComingSound;
     private void OnEnable()
     {
         Enable();
     }
     private void Enable()
     {
-
+        SettingManager.instance.directionLight.SetActive(false);
         if (!instance)
         {
             instance = this;
@@ -55,7 +56,8 @@ public class BankMetroGame : MonoBehaviour
         crownHiestCount = -1;
         SetSafesRandomly();
 
-        DG.Tweening.DOVirtual.DelayedCall(5f, () => initialPanel.SetActive(false));
+        DG.Tweening.DOVirtual.DelayedCall(2.5f, () => initialPanel.SetActive(false));
+        DG.Tweening.DOVirtual.DelayedCall(0.5f, () => safeComingSound.Play());
 
     }
 
@@ -134,6 +136,12 @@ public class BankMetroGame : MonoBehaviour
 
         UIManager.instance.UpdateMoneyInMatch(tempRewardOnWin);
         bankHiestComplete.SetActive(false);
+    }
+
+    private void OnDisable()
+    {
+        SettingManager.instance.directionLight.SetActive(true);
+
     }
 
 }

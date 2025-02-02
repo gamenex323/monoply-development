@@ -77,6 +77,7 @@ public class AiMatchFinding : MonoBehaviour
         SwitchTurn();
         AiMatchIsPlaying = true;
         UIManager.instance.bottomPanel.SetActive(true);
+        MonopolyGo.instance.ActiveAllIcons();
     }
 
     public void SwitchTurn()

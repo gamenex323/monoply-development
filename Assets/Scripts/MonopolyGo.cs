@@ -7,6 +7,7 @@ using ExitGames.Client.Photon;
 using System.Collections.Generic;
 using System.Reflection;
 using DG.Tweening;
+using Cinemachine;
 public class MonopolyGo : MonoBehaviourPunCallbacks
 {
     public GameObject playerIcon; // The icon that moves
@@ -20,7 +21,7 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
     public Transform dice2; // Transform of the second dice
     public float diceRollDuration = 1f; // Duration for the dice roll animation
 
-    private int currentTileIndex = 0; // Player's current tile index
+    public int currentTileIndex = 0; // Player's current tile index
     private int currentTurn = 0; // Current player's turn
     private int playerIndex; // Local player's index
     public bool isMultiplayer; // Check if the game is multiplayer
@@ -32,6 +33,9 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
     public GameObject dice;
     int die1;
     int die2;
+
+    public PlayerIconStatus[] playerIconStatus;
+    public CinemachineVirtualCamera virtualCamera;
     public static MonopolyGo instance; // Singleton instance
 
     void Awake()
@@ -94,6 +98,8 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
 
     IEnumerator MovePlayer()
     {
+
+        AssignPlayerIcon();
         dice.SetActive(true);
         yield return new WaitForSeconds(0.5f);
         int diceSum = RollDice(); // Roll the dice
@@ -105,6 +111,11 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
         {
             currentTileIndex = (currentTileIndex + 1) % tiles.Length;
             UpdateTileIndex(currentTileIndex);
+            if (AiMatchFinding.instance.AiMatchIsPlaying)
+            {
+                playerIconStatus[AiMatchFinding.instance.turnOfPlayer].currentTileIndex = currentTileIndex;
+            }
+            SettingManager.instance.IconMoveSound();
             // Sync the new tile index and hat position across the network
             // Sync the hat movement
             //photonView.RPC(nameof(SyncHatPosition), RpcTarget.AllBuffered, tiles[currentTileIndex].position);
@@ -122,6 +133,46 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
             }
         }
 
+
+
+
+    }
+
+    public void ActiveAllIcons()
+    {
+        for (int i = 0; i < playerIconStatus.Length; i++)
+        {
+            playerIconStatus[i].icon.SetActive(true);
+        }
+    }
+    void AssignPlayerIcon()
+    {
+        if (AiMatchFinding.instance.AiMatchIsPlaying)
+        {
+            currentTileIndex = playerIconStatus[AiMatchFinding.instance.turnOfPlayer].currentTileIndex;
+            print("Current Tile Index By AI Mode: "+ currentTileIndex);
+        }
+        if (!AiMatchFinding.instance.AiMatchIsPlaying)
+        {
+            return;
+        }
+        switch (AiMatchFinding.instance.turnOfPlayer)
+        {
+            case 0:
+                playerIcon = playerIconStatus[0].icon ;
+                break;
+            case 1:
+                playerIcon = playerIconStatus[1].icon;
+                break;
+            case 2:
+                playerIcon = playerIconStatus[2].icon;
+                break;
+            case 3:
+                playerIcon = playerIconStatus[3].icon;
+                break;
+
+        }
+        virtualCamera.m_Follow = playerIcon.transform;
 
     }
 
@@ -614,4 +665,10 @@ public class MonopolyGo : MonoBehaviourPunCallbacks
 
 
     #endregion
+}
+[System.Serializable]
+public class PlayerIconStatus
+{
+    public GameObject icon;
+    public int currentTileIndex;
 }

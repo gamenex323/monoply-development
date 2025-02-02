@@ -15,8 +15,10 @@ public class SettingManager : MonoBehaviour
 
     [SerializeField] Button SoundOn;
     [SerializeField] Button SoundOff;
+    public GameObject directionLight;
 
     public static SettingManager instance;
+
 
     //[SerializeField] Button VibrationOn;
     //[SerializeField] Button VibrationOff;
@@ -122,6 +124,13 @@ public class SettingManager : MonoBehaviour
         {
             GameDevUtils.SoundSystem.SoundManager.Instance.Play("ButtonClick");
         }
+    }    
+    public void PlaySafeClickSound()
+    {
+        if (GlobalData.Sound == 1)
+        {
+            GameDevUtils.SoundSystem.SoundManager.Instance.Play("SafeClick");
+        }
     }
 
     public void OnClickButtonSound()
@@ -148,6 +157,13 @@ public class SettingManager : MonoBehaviour
         if (GlobalData.Sound == 1)
         {
             GameDevUtils.SoundSystem.SoundManager.Instance.Play("Dice");
+        }
+    }
+    public void IconMoveSound()
+    {
+        if (GlobalData.Sound == 1)
+        {
+            GameDevUtils.SoundSystem.SoundManager.Instance.Play("IconMove");
         }
     }
     #endregion

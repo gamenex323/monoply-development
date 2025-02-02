@@ -69,3 +69,23 @@ MonoBehaviour:
     m_volume: 1
     m_pitch: 1
     source: {fileID: 0}
+  - name: SafeClick
+    type: 0
+    audioClip: {fileID: 8300000, guid: c3ef430ca0091344eaa7b348b61f3243, type: 3}
+    audioClips: []
+    loop: 0
+    playRandomClip: 0
+    playOnAwake: 0
+    m_volume: 1
+    m_pitch: 1
+    source: {fileID: 0}
+  - name: IconMove
+    type: 0
+    audioClip: {fileID: 8300000, guid: ceb2878f985de0f4eb1bf545ac078daf, type: 3}
+    audioClips: []
+    loop: 0
+    playRandomClip: 0
+    playOnAwake: 0
+    m_volume: 1
+    m_pitch: 1
+    source: {fileID: 0}
